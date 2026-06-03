@@ -1,34 +1,38 @@
-import Versions from './components/Versions'
-import electronLogo from './assets/electron.svg'
+import logo from './assets/icon.png';
+import googleIcon from './assets/google.svg';
 
 function App(): React.JSX.Element {
-  const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
-
   return (
-    <>
-      <img alt="logo" className="logo" src={electronLogo} />
-      <div className="creator">Powered by electron-vite</div>
-      <div className="text">
-        Build an Electron app with <span className="react">React</span>
-        &nbsp;and <span className="ts">TypeScript</span>
-      </div>
-      <p className="tip">
-        Please try pressing <code>F12</code> to open the devTool
+    <div
+      className={`
+        text-center
+        flex flex-col justify-center items-center gap-4
+      `}
+    >
+      <img src={logo} width={200} height={200} />
+
+      <p className="text-5xl"> Bem-vindo de volta </p>
+
+      <p className="w-100">
+        Faça login com sua conta do Google para usar o YouTube Uploader.
       </p>
-      <div className="actions">
-        <div className="action">
-          <a href="https://electron-vite.org/" target="_blank" rel="noreferrer">
-            Documentation
-          </a>
-        </div>
-        <div className="action">
-          <a target="_blank" rel="noreferrer" onClick={ipcHandle}>
-            Send IPC
-          </a>
-        </div>
-      </div>
-      <Versions></Versions>
-    </>
+
+      <button
+        onClick={() => window.alert('Ainda não dá não, guenta aí até a atualização')}
+        className={`
+          mt-10!
+          rounded-xl
+          bg-zinc-900
+          p-4
+          w-fit h-fit
+          flex justify-center items-center gap-4
+          hover:border hover:border-blue-600 hover:cursor-pointer
+        `}
+      >
+        <img src={googleIcon} width={25} height={25} />
+        Logar com o Google
+      </button>
+    </div>
   )
 }
 
