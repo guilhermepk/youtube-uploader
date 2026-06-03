@@ -1,10 +1,10 @@
 {
   "name": "youtube-uploader",
-  "version": "1.0.0",
-  "description": "An Electron application with React and TypeScript",
+  "version": "0.0.1",
+  "description": "Um aplicativo para auxiliar com uploads em massa no Youtube",
   "main": "./out/main/index.js",
-  "author": "example.com",
-  "homepage": "https://electron-vite.org",
+  "author": "Guilherme Prigol Kramer",
+  "homepage": "",
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint --cache .",
@@ -52,5 +52,21 @@
     "react-dom": "^19.2.1",
     "typescript": "^5.9.3",
     "vite": "^7.2.6"
+  },
+  "build": {
+    "appId": "com.guilhermepk.youtube-uploader",
+    "productName": "Youtube Uploader",
+    "icon": "build/icon",
+    "win": {
+      "icon": "build/icon.ico",
+      "target": "nsis"
+    },
+    "nsis": {},
+    "mac": {
+      "icon": "build/icon.icns"
+    },
+    "linux": {
+      "icon": "build/icon.png"
+    }
   }
 }
