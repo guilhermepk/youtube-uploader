@@ -3,6 +3,9 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { bootstrapNestJS } from './bootstrap-nestjs'
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 app.setName('Youtube Uploader')
 

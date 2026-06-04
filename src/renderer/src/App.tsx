@@ -1,7 +1,19 @@
 import logo from './assets/icon.png';
 import googleIcon from './assets/google.svg';
+import { IpcResponse } from '@shared/models/interfaces/ipc-response.interface';
 
 function App(): React.JSX.Element {
+  async function handleGoogleAuth(): Promise<void> {
+    const response: IpcResponse<null> = await window.api.google.startAuth();
+
+    if (response.success) {
+
+    } else {
+      const { code, message, details } = response.error;
+      window.alert(`deu errado: ${code} | ${message} | ${details?.join('; ')}`)
+    }
+  }
+
   return (
     <div
       className={`
@@ -18,7 +30,7 @@ function App(): React.JSX.Element {
       </p>
 
       <button
-        onClick={() => window.alert('Ainda não dá não, guenta aí até a atualização')}
+        onClick={handleGoogleAuth}
         className={`
           mt-10!
           rounded-xl

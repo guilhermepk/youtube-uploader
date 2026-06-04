@@ -1,12 +1,15 @@
-import { contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
+import { ContextBridgeApi } from './api.interface'
+import { IpcResponse } from '@shared/models/interfaces/ipc-response.interface'
 
-// Custom APIs for renderer
-const api = {}
+const api: ContextBridgeApi = {
+  google: {
+    startAuth: (): Promise<IpcResponse<null>> => ipcRenderer.invoke('google/start-auth')
+  }
+}
 
-// Use `contextBridge` APIs to expose Electron APIs to
-// renderer only if context isolation is enabled, otherwise
-// just add to the DOM global.
+
 if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electron', electronAPI)
