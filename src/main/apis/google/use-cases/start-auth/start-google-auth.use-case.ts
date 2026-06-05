@@ -6,12 +6,16 @@ import { googleAuthHtmlResponse } from "./google-auth-html-response";
 import { Auth } from 'googleapis';
 import { BrowserWindow, shell } from 'electron';
 import { BadGatewayError } from '../../../../../shared/models/errors/bad-gateway.error';
+import { SaveGoogleTokenUseCase } from '../../../../secure-data-manager/use-cases/save-google-token.use-case';
 
 @Injectable()
 export class StartGoogleAuthUseCase {
   constructor(
     @Inject(Auth.OAuth2Client)
     private readonly oAuth2Client: Auth.OAuth2Client,
+
+    @Inject(SaveGoogleTokenUseCase)
+    private readonly saveGoogleTokenUseCase: SaveGoogleTokenUseCase
   ) { }
 
   async execute(): Promise<void> {
@@ -29,14 +33,14 @@ export class StartGoogleAuthUseCase {
 
             if (code) {
               const tokens = await this.oAuth2Client.getToken(code).then(res => res.tokens);
-              const { access_token, refresh_token } = tokens;
+              const { access_token: accessToken, refresh_token: refreshToken } = tokens;
 
-              if (access_token && refresh_token) {
-                this.oAuth2Client.setCredentials({ access_token, refresh_token });
+              if (accessToken && refreshToken) {
+                this.oAuth2Client.setCredentials({ access_token: accessToken, refresh_token: refreshToken });
 
-                // TODO: caso de uso para salvar o token do google no db
+                await this.saveGoogleTokenUseCase.execute({ accessToken, refreshToken })
 
-                const tokenInfo = await this.oAuth2Client.getTokenInfo(access_token)
+                const tokenInfo = await this.oAuth2Client.getTokenInfo(accessToken)
                   .catch(() => null);
 
                 BrowserWindow.getAllWindows().forEach((win) => {

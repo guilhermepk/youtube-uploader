@@ -1,8 +1,12 @@
 import { Module } from '@nestjs/common'
 import { StartGoogleAuthUseCase } from './use-cases/start-auth/start-google-auth.use-case'
 import { Auth } from 'googleapis'
+import { SecureDataManagerModule } from '../../secure-data-manager/secure-data-manager.module'
 
 @Module({
+  imports: [
+    SecureDataManagerModule
+  ],
   providers: [
     StartGoogleAuthUseCase,
     {
