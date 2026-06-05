@@ -2,7 +2,7 @@ import { tryCatch } from "../../common/utils/try-catch";
 import { Inject, Injectable } from "@nestjs/common";
 import { SaveGoogleTokenDto } from "../models/dtos/save-google-token.dto";
 import { safeStorage } from "electron";
-import { SaveFileUseCase } from "../../file-manager/use-cases/save-file.use-case";
+import { SaveFileUseCase } from "@main/file-manager/use-cases/save/save-file.use-case";
 
 @Injectable()
 export class SaveGoogleTokenUseCase {

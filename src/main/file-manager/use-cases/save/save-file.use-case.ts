@@ -1,8 +1,8 @@
-import { tryCatch } from "../../common/utils/try-catch";
 import { Injectable } from "@nestjs/common";
 import { app } from "electron";
 import path from "path";
 import fs from 'fs';
+import { tryCatch } from "@main/common/utils/try-catch";
 
 @Injectable()
 export class SaveFileUseCase {
