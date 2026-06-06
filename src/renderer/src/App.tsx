@@ -1,18 +1,42 @@
 import logo from './assets/icon.png';
 import googleIcon from './assets/google.svg';
 import { IpcResponse } from '@shared/models/interfaces/ipc-response.interface';
+import { useEffect, useState } from 'react';
+import { IsGoogleAuthenticatedResponse } from '@shared/responses/google/is-google-authenticated.response';
 
 function App(): React.JSX.Element {
-  async function handleGoogleAuth(): Promise<void> {
-    const response: IpcResponse<null> = await window.api.google.startAuth();
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | undefined>(undefined);
+  const [email, setEmail] = useState<string | undefined>(undefined);
+
+  async function getAuthData(): Promise<void> {
+    const response: IpcResponse<IsGoogleAuthenticatedResponse> = await window.api.google.isAuthenticated();
 
     if (response.success) {
-
+      setIsAuthenticated(response.data.isAuthenticated);
+      setEmail(response.data.email ?? undefined);
     } else {
       const { code, message, details } = response.error;
       window.alert(`deu errado: ${code} | ${message} | ${details?.join('; ')}`)
     }
   }
+
+  async function handleGoogleAuth(): Promise<void> {
+    const response: IpcResponse<null> = await window.api.google.startAuth();
+
+    if (response.success) {
+      window.api.google.onAuthSuccess((payload) => {
+        setIsAuthenticated(true);
+        setEmail(payload.email ?? undefined);
+      })
+    } else {
+      const { code, message, details } = response.error;
+      window.alert(`deu errado: ${code} | ${message} | ${details?.join('; ')}`)
+    }
+  }
+
+  useEffect(() => {
+    getAuthData();
+  }, []);
 
   return (
     <div
@@ -44,6 +68,11 @@ function App(): React.JSX.Element {
         <img src={googleIcon} width={25} height={25} />
         Logar com o Google
       </button>
+
+      <div>
+        <p> Autenticado: {isAuthenticated ? 'Sim' : 'Não'} </p>
+        <p> Email: {email ?? 'Indefinido'} </p>
+      </div>
     </div>
   )
 }

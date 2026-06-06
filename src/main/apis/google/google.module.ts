@@ -5,6 +5,7 @@ import { ReadGoogleTokenUseCase } from '@main/secure-data-manager/use-cases/red-
 import { StartGoogleAuthUseCase } from './use-cases/start-auth/start-google-auth.use-case';
 import { YoutubeModule } from './youtube/youtube.module';
 import { googleAuthFactory } from './utils/google-auth.factory';
+import { IsGoogleAuthenticatedUseCase } from './use-cases/is-authenticated/is-google-authenticated.use-case';
 
 @Module({
   imports: [
@@ -12,12 +13,13 @@ import { googleAuthFactory } from './utils/google-auth.factory';
     forwardRef(() => YoutubeModule)
   ],
   providers: [
-    StartGoogleAuthUseCase,
     {
       provide: Auth.OAuth2Client,
       useFactory: googleAuthFactory,
       inject: [ReadGoogleTokenUseCase]
     },
+    StartGoogleAuthUseCase,
+    IsGoogleAuthenticatedUseCase
   ],
   exports: [
     Auth.OAuth2Client
