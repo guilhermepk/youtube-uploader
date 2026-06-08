@@ -20,8 +20,14 @@ export function AuthProvider(): JSX.Element {
     const response: IpcResponse<IsGoogleAuthenticatedResponse> = await window.api.google.isAuthenticated();
 
     if (response.success) {
-      setEmail(response.data.email ?? undefined);
-      if (!response.data.email && location.pathname !== routes.loginPage.path) navigate(routes.loginPage.path);
+      const { data } = response;
+      const { pathname } = location;
+      const { loginPage, homePage } = routes;
+
+      setEmail(data.email ?? undefined);
+
+      if (!data.email && pathname !== loginPage.path) navigate(loginPage.path);
+      else if (data.email && pathname == loginPage.path) navigate(homePage.path);
     } else {
       const { code, message, details } = response.error;
       window.alert(`deu errado: ${code} | ${message} | ${details?.join('; ')}`)
