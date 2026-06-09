@@ -1,6 +1,10 @@
+import { routes } from "@renderer/common/routes";
 import { Upload } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function HomePage(): React.JSX.Element {
+  const navigate = useNavigate();
+
   return (
     <div
       className="flex flex-col items-center justify-center p-10 gap-10 w-full"
@@ -16,7 +20,9 @@ export default function HomePage(): React.JSX.Element {
           h-fit w-[300px]
           text-center
           flex flex-col items-center justify-center gap-5
+          cursor-pointer
         `}
+        onClick={() => navigate(routes.fullFlowPage.path)}
       >
         <Upload />
 

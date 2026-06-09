@@ -2,8 +2,11 @@ import { useAuth } from '@renderer/contexts/AuthContext';
 import logo from '../assets/icon.png';
 import { useEffect } from 'react';
 import { LogOut } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { routes } from '@renderer/common/routes';
 
 export default function Navbar(): React.JSX.Element {
+  const navigate = useNavigate();
   const { userName, pictureUrl, email } = useAuth();
 
   useEffect(() => {
@@ -20,7 +23,7 @@ export default function Navbar(): React.JSX.Element {
         p-2
       `}
     >
-      <img src={logo} width={60} height={60} />
+      <img src={logo} width={60} height={60} className='cursor-pointer' onClick={() => navigate(routes.homePage.path)} />
 
       {/* <div className='flex items-center justify-center gap-2 cursor-pointer border border-transparent hover:border-white p-2 rounded-[10px]'> */}
       <div className='flex items-center justify-center gap-2p-2'>
