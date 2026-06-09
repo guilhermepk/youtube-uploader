@@ -5,7 +5,7 @@ import { setAppContext } from './nest-context'
 import { registerNestAppIpc } from './app.ipc'
 
 export async function bootstrapNestJS(): Promise<void> {
-  const logger = new Logger('Tasker')
+  const logger = new Logger('YouTube Uploader')
 
   const appContext: INestApplicationContext = await NestFactory.createApplicationContext(AppModule)
   setAppContext(appContext)
