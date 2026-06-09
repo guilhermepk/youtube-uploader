@@ -6,15 +6,15 @@ import { useNavigate } from 'react-router-dom';
 import { routes } from '@renderer/common/routes';
 
 export default function LoginPage(): React.JSX.Element {
-  const { setEmail } = useAuth();
+  const { refreshAuthData } = useAuth();
   const navigate = useNavigate();
 
   async function handleGoogleAuth(): Promise<void> {
     const response: IpcResponse<null> = await window.api.google.startAuth();
 
     if (response.success) {
-      window.api.google.onAuthSuccess((payload) => {
-        setEmail(payload.email ?? undefined);
+      window.api.google.onAuthSuccess(async (_payload) => {
+        await refreshAuthData()
         navigate(routes.homePage.path);
       })
     } else {

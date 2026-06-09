@@ -1,12 +1,14 @@
 import { routes } from "@renderer/common/routes";
 import { IpcResponse } from "@shared/models/interfaces/ipc-response.interface";
-import { IsGoogleAuthenticatedResponse } from "@shared/responses/google/is-google-authenticated.response";
+import { GetGoogleUserDataResponse } from "@shared/responses/google/get-google-user-data.response";
 import { createContext, JSX, useContext, useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 type AuthContextType = {
-  email: string | undefined;
-  setEmail: React.Dispatch<React.SetStateAction<string | undefined>>
+  email: string | null;
+  userName: string | null;
+  pictureUrl: string | null;
+  refreshAuthData: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -14,17 +16,21 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider(): JSX.Element {
   const location = useLocation();
   const navigate = useNavigate();
-  const [email, setEmail] = useState<string | undefined>(undefined);
+  const [email, setEmail] = useState<string | null>(null);
+  const [userName, setUserName] = useState<string | null>(null);
+  const [pictureUrl, setPictureUrl] = useState<string | null>(null);
 
   async function getAuthData(): Promise<void> {
-    const response: IpcResponse<IsGoogleAuthenticatedResponse> = await window.api.google.isAuthenticated();
+    const response: IpcResponse<GetGoogleUserDataResponse> = await window.api.google.getUserData();
 
     if (response.success) {
       const { data } = response;
       const { pathname } = location;
       const { loginPage, homePage } = routes;
 
-      setEmail(data.email ?? undefined);
+      setEmail(data.email);
+      setUserName(data.userName);
+      setPictureUrl(data.pictureUrl);
 
       if (!data.email && pathname !== loginPage.path) navigate(loginPage.path);
       else if (data.email && pathname == loginPage.path) navigate(homePage.path);
@@ -40,7 +46,10 @@ export function AuthProvider(): JSX.Element {
 
   return (
     <AuthContext.Provider value={{
-      email, setEmail
+      email,
+      userName,
+      pictureUrl,
+      refreshAuthData: getAuthData
     }}>
       <Outlet />
     </AuthContext.Provider>

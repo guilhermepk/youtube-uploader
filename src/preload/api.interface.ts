@@ -1,10 +1,10 @@
 import { IpcResponse } from "@shared/models/interfaces/ipc-response.interface"
-import { IsGoogleAuthenticatedResponse } from "@shared/responses/google/is-google-authenticated.response"
+import { GetGoogleUserDataResponse } from "@shared/responses/google/get-google-user-data.response"
 
 export interface ContextBridgeApi {
   google: {
     startAuth: () => Promise<IpcResponse<null>>,
-    isAuthenticated: () => Promise<IpcResponse<IsGoogleAuthenticatedResponse>>,
+    getUserData: () => Promise<IpcResponse<GetGoogleUserDataResponse>>,
     onAuthSuccess: (callback: (payload: { email: string | null }) => void) => (() => void),
   }
 }
