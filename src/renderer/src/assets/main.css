@@ -39,12 +39,10 @@ body {
   user-select: none;
 }
 
-.text {
-  font-size: 28px;
-  color: rgba(255, 255, 245, 0.86);
-  font-weight: 700;
-  line-height: 32px;
-  text-align: center;
-  margin: 0 10px;
-  padding: 16px 0;
+h1 {
+  font-size: 35px;
+}
+
+h2 {
+  font-size: 20px;
 }
