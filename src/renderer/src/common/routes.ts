@@ -1,5 +1,5 @@
 import FullFlowPage from "@renderer/pages/FullFlowPage";
-import HomePage from "@renderer/pages/HomePage";
+import HomePage from "@renderer/pages/home/HomePage";
 import LoginPage from "@renderer/pages/LoginPage";
 
 export const routes = {
