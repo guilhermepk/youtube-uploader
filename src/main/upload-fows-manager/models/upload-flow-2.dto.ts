@@ -1,7 +1,9 @@
 export class UploadFlow2Dto {
   sheetData: {
     file: File;
-    titleColunmIndex: number;
+    personFirstNameColunmIndex: number;
+    personLastNameColunmIndex: number;
+    personSectorColumnIndex: number;
     descriptionColunmIndex: number;
   }
   playlist: {

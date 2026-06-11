@@ -25,7 +25,13 @@ export class UploadFlow2UseCase {
   async execute(data: UploadFlow2Dto): Promise<UploadFlow2Response> {
     return await tryCatch(async () => {
       const { sheetData, playlist: playlistData } = data;
-      const { file, titleColunmIndex, descriptionColunmIndex } = sheetData;
+      const {
+        file,
+        personFirstNameColunmIndex,
+        personLastNameColunmIndex,
+        personSectorColumnIndex,
+        descriptionColunmIndex
+      } = sheetData;
 
       const playlistItems = await this.getPlaylistItemsUseCase.execute(playlistData.id, playlistData.itemCount);
 
@@ -42,17 +48,18 @@ export class UploadFlow2UseCase {
 
       for (let lineIndex = 1; lineIndex < jsonData.length; lineIndex++) {
         const line = jsonData[lineIndex];
-        const title = line[titleColunmIndex];
+        const personFirstName = line[personFirstNameColunmIndex];
+        const personLastName = line[personLastNameColunmIndex];
+        const personSector = line[personSectorColumnIndex];
         const description = line[descriptionColunmIndex];
 
-        if (!title) {
-          if (!description) {
+        if (!personFirstName || !personSector || !personLastName) {
+          if (!personFirstName && !personSector && !description) {
             const nextLine = jsonData[lineIndex + 1];
-
-            const nextLineTitle = nextLine[titleColunmIndex];
-            const nextLineDescription = nextLine[descriptionColunmIndex];
-
-            if (!nextLineTitle && !nextLineDescription) break;
+            const nextLinePersonFirstName = nextLine[personFirstNameColunmIndex];
+            const nextLinePersonLastName = nextLine[personLastNameColunmIndex];
+            const nextLinePersonSector = nextLine[personSectorColumnIndex];
+            if (!nextLinePersonFirstName && !nextLinePersonLastName && !nextLinePersonSector) break;
           }
 
           response.results.push({
@@ -64,17 +71,31 @@ export class UploadFlow2UseCase {
           continue;
         }
 
-        const upperCaseTitle = title.toUpperCase();
+        // É uma boa prática escapar caracteres especiais das strings caso o nome ou setor contenham algo como ".", "*", ou "()", que quebram a expressão regular.
+        const escapeRegExp = (text: string): string => {
+          return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+        };
+
+        const safeFirstName = escapeRegExp(personFirstName);
+        const safeLastName = escapeRegExp(personLastName);
+        const safeSector = escapeRegExp(personSector);
+
+        // Monta o Regex: Começa com o nome (^), seguido por 1 ou mais espaços (\s+), 
+        // e termina com o setor ($). A flag 'i' ignora o case.
+        const regex = new RegExp(`^${safeFirstName} ${safeLastName}\\s+${safeSector}$`, 'i');
 
         const playlistItem: youtube_v3.Schema$PlaylistItem | undefined = playlistItems.find(
-          item => (item.snippet?.title ?? '').toUpperCase() === upperCaseTitle
+          item => regex.test(item.snippet?.title ?? '')
         );
         const videoId: string | undefined | null = playlistItem?.snippet?.resourceId?.videoId;
+
+        const title = `${personFirstName} ${personLastName} - ${personSector}`;
+        const upperCaseTitle = title.toUpperCase();
 
         if (!playlistItem || !videoId) {
           let errorMsg: string = '';
 
-          if (!playlistItem) errorMsg = `Vídeo "${upperCaseTitle}" não encontrado na playlist "${playlistData.name}"`;
+          if (!playlistItem) errorMsg = `Vídeo "${upperCaseTitle.replace('-', '')}" não encontrado na playlist "${playlistData.name}"`;
           else if (!videoId) errorMsg = `Não foi possível obter o ID do vídeo "${upperCaseTitle}"`;
 
           response.results.push({
