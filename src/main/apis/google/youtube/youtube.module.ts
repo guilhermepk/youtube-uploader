@@ -3,6 +3,7 @@ import { Auth, google, youtube_v3 } from "googleapis";
 import { PublishVideoUseCase } from "./use-cases/publish-video/publish-video.use-case";
 import { GoogleModule } from "../google.module";
 import { GetPlaylistsUseCase } from "./use-cases/get-playlists/get-playlists.use-case";
+import { GetPlaylistItemsUseCase } from "./use-cases/get-playlist-items/get-playlist-items.use-case";
 
 @Module({
   imports: [
@@ -15,7 +16,8 @@ import { GetPlaylistsUseCase } from "./use-cases/get-playlists/get-playlists.use
       inject: [Auth.OAuth2Client]
     },
     PublishVideoUseCase,
-    GetPlaylistsUseCase
+    GetPlaylistsUseCase,
+    GetPlaylistItemsUseCase
   ]
 })
 export class YoutubeModule { }
