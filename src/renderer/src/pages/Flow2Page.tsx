@@ -1,10 +1,15 @@
 import BackButton from "@renderer/components/BackButton";
+import { FileUpload } from "@renderer/components/FileUpload";
 import Page from "@renderer/components/Page";
 
 export default function Flow2Page(): React.JSX.Element {
   return (
     <Page className="p-0!">
       <LocalNavbar />
+
+      <FileUpload
+        submitButtonText="Continuar"
+      />
     </Page>
   );
 }
