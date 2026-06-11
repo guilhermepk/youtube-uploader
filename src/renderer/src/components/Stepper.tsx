@@ -20,7 +20,7 @@ export function Stepper({ steps, currentStepIndex, onNextStep, onPrevStep }: Ste
 
   useEffect(() => {
     setCurrentStep(steps[currentStepIndex]);
-  }, [currentStepIndex]);
+  }, [currentStepIndex, steps]);
 
   return (
     <div className="w-full h-full p-8">
