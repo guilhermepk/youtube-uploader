@@ -1,6 +1,6 @@
 import { routes } from "@renderer/common/routes";
 import { IpcResponse } from "@shared/models/interfaces/ipc-response.interface";
-import { GetGoogleUserDataResponse } from "@shared/responses/google/get-google-user-data.response";
+import { GetGoogleUserDataResponse } from "@shared/models/responses/google/get-google-user-data.response";
 import { createContext, JSX, useContext, useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 

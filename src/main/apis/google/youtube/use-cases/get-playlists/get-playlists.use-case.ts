@@ -1,6 +1,6 @@
 import { tryCatch } from "@main/common/utils/try-catch";
 import { Inject, Injectable } from "@nestjs/common";
-import { GetPlaylistsResponse } from "@shared/responses/google/youtube/get-playlists.response";
+import { GetPlaylistsResponse } from "@shared/models/responses/google/youtube/get-playlists.response";
 import { Auth, youtube_v3 } from "googleapis";
 
 @Injectable()

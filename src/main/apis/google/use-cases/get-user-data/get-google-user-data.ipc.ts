@@ -1,5 +1,5 @@
 import { IpcResponse } from "@shared/models/interfaces/ipc-response.interface";
-import { GetGoogleUserDataResponse } from "@shared/responses/google/get-google-user-data.response";
+import { GetGoogleUserDataResponse } from "@shared/models/responses/google/get-google-user-data.response";
 import { GetGoogleUserDataUseCase } from "./get-google-user-data.use-case";
 import createIpcHandler from "@main/common/utils/create-ipc-handler";
 

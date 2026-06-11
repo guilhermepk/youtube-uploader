@@ -1,5 +1,5 @@
 import { IpcResponse } from "@shared/models/interfaces/ipc-response.interface";
-import { GetPlaylistsResponse } from "@shared/responses/google/youtube/get-playlists.response";
+import { GetPlaylistsResponse } from "@shared/models/responses/google/youtube/get-playlists.response";
 import { GetPlaylistsUseCase } from "./get-playlists.use-case";
 import createIpcHandler from "@main/common/utils/create-ipc-handler";
 
