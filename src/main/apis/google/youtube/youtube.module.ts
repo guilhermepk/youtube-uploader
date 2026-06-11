@@ -22,7 +22,8 @@ import { UpdateVideoUseCase } from "./use-cases/update-video/update-video.use-ca
     UpdateVideoUseCase
   ],
   exports: [
-    UpdateVideoUseCase
+    UpdateVideoUseCase,
+    GetPlaylistItemsUseCase
   ]
 })
 export class YoutubeModule { }
