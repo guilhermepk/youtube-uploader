@@ -1,5 +1,6 @@
 import { Check } from "lucide-react";
 import { ReactNode, useEffect, useState } from "react";
+import Button from "./Button";
 
 export interface StepItem {
   title: string;
@@ -31,18 +32,19 @@ export function Stepper({ steps, currentStepIndex, onNextStep, onPrevStep }: Ste
 
       {/* Controles */}
       <div className="flex justify-between">
-        <button
+        <Button
           onClick={() => onPrevStep(currentStepIndex)}
           disabled={currentStepIndex === 0}
         >
-          Voltar
-        </button>
-        <button
+          Anterior
+        </Button>
+
+        <Button
           onClick={() => onNextStep(currentStepIndex)}
           disabled={currentStepIndex === steps.length - 1}
         >
           {currentStepIndex === steps.length - 1 ? "Finalizar" : "Próximo"}
-        </button>
+        </Button>
       </div>
     </div>
   );
