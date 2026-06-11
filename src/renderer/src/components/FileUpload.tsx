@@ -1,13 +1,14 @@
 import { useState, ChangeEvent, useEffect } from 'react';
 
 interface FileUploadProps {
-  onFileChange: (file: File | null) => void
+  file: File | null;
+  onFileChange: React.Dispatch<React.SetStateAction<File | null>>
 }
 
 export function FileUpload({
-  onFileChange
+  onFileChange, file: fatherComponentFile
 }: FileUploadProps) {
-  const [file, setFile] = useState<File | null>(null);
+  const [file, setFile] = useState<File | null>(fatherComponentFile);
 
   function handleFileChange(event: ChangeEvent<HTMLInputElement>): void {
     if (event.target.files && event.target.files.length > 0) {
@@ -18,6 +19,10 @@ export function FileUpload({
   useEffect(() => {
     onFileChange(file);
   }, [file]);
+
+  useEffect(() => {
+    setFile(fatherComponentFile);
+  }, [fatherComponentFile]);
 
   return (
     <div className="flex flex-col items-center">

@@ -5,27 +5,17 @@ export interface StepItem {
   title: string;
   description?: string;
   content: ReactNode;
-  onPrevStep?: (currentStepIndex: number) => void;
-  onNextStep?: (currentStepIndex: number) => void;
 }
 
 interface StepperProps {
   steps: StepItem[];
   currentStepIndex: number;
-  onPrevStep?: (currentStepIndex: number) => void;
-  onNextStep?: (currentStepIndex: number) => void;
+  onPrevStep: (currentStepIndex: number) => void;
+  onNextStep: (currentStepIndex: number) => void;
 }
 
 export function Stepper({ steps, currentStepIndex, onNextStep, onPrevStep }: StepperProps) {
   const [currentStep, setCurrentStep] = useState<StepItem>(steps[currentStepIndex]);
-
-  function handleNextStep(): void {
-    currentStep.onNextStep ? currentStep.onNextStep(currentStepIndex) : onNextStep?.(currentStepIndex)
-  }
-
-  function handlePrevStep(): void {
-    currentStep.onPrevStep ? currentStep.onPrevStep(currentStepIndex) : onPrevStep?.(currentStepIndex)
-  }
 
   useEffect(() => {
     setCurrentStep(steps[currentStepIndex]);
@@ -42,13 +32,13 @@ export function Stepper({ steps, currentStepIndex, onNextStep, onPrevStep }: Ste
       {/* Controles */}
       <div className="flex justify-between">
         <button
-          onClick={handlePrevStep}
+          onClick={() => onPrevStep(currentStepIndex)}
           disabled={currentStepIndex === 0}
         >
           Voltar
         </button>
         <button
-          onClick={handleNextStep}
+          onClick={() => onNextStep(currentStepIndex)}
           disabled={currentStepIndex === steps.length - 1}
         >
           {currentStepIndex === steps.length - 1 ? "Finalizar" : "Próximo"}

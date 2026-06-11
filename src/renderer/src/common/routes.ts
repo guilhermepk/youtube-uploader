@@ -1,4 +1,4 @@
-import Flow2Page from "@renderer/pages/Flow2Page";
+import Flow2Page from "@renderer/pages/flow-2/Flow2Page";
 import FullFlowPage from "@renderer/pages/FullFlowPage";
 import HomePage from "@renderer/pages/home/HomePage";
 import LoginPage from "@renderer/pages/LoginPage";
