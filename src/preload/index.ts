@@ -3,6 +3,7 @@ import { electronAPI } from '@electron-toolkit/preload'
 import { ContextBridgeApi } from './api.interface'
 import { IpcResponse } from '@shared/models/interfaces/ipc-response.interface'
 import { GetGoogleUserDataResponse } from '@shared/responses/google/get-google-user-data.response'
+import { GetPlaylistsResponse } from '@shared/responses/google/youtube/get-playlists.response'
 
 const api: ContextBridgeApi = {
   google: {
@@ -13,6 +14,10 @@ const api: ContextBridgeApi = {
       ipcRenderer.on('google-auth-success', subscription);
       return () => ipcRenderer.removeListener('google-auth-success', subscription);
     },
+
+    youtube: {
+      getPlaylists: (): Promise<IpcResponse<GetPlaylistsResponse>> => ipcRenderer.invoke('google/youtube/get-playlists')
+    }
   }
 }
 

@@ -45,6 +45,6 @@ export class PublishVideoUseCase {
       );
 
       console.log('Upload concluído! ID do vídeo:', response.data.id);
-    }, `Erro ao publicar vídeo`);
+    }, `Erro ao publicar vídeo no YouTube`);
   }
 }
