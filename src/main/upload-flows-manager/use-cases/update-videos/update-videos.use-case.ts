@@ -5,7 +5,7 @@ import { ReadSheetUseCase } from "@main/file-manager/use-cases/read-sheet/read-s
 import { UpdateVideosDto } from "@main/upload-flows-manager/models/dtos/update-videos.dto";
 import { Inject, Injectable } from "@nestjs/common";
 import { UnprocessableContentError } from "@shared/models/errors/unprocessable-content.error";
-import { UploadFlow2Response } from "@shared/models/responses/upload-flows-manager/upload-flow-2.response";
+import { UploadFlow2Response } from "@shared/models/responses/upload-flows-manager/update-videos.response";
 import { youtube_v3 } from "googleapis";
 import * as XLSX from 'xlsx';
 
@@ -46,24 +46,24 @@ export class UpdateVideosUseCase {
 
       const response: UploadFlow2Response = { results: [] };
 
-      for (let lineIndex = 1; lineIndex < jsonData.length; lineIndex++) {
-        const line = jsonData[lineIndex];
-        const personFirstName = line[personFirstNameColunmIndex];
-        const personLastName = line[personLastNameColunmIndex];
-        const personSector = line[personSectorColumnIndex];
-        const description = line[descriptionColunmIndex];
+      for (let rowIndex = 1; rowIndex < jsonData.length; rowIndex++) {
+        const row = jsonData[rowIndex];
+        const personFirstName = row[personFirstNameColunmIndex];
+        const personLastName = row[personLastNameColunmIndex];
+        const personSector = row[personSectorColumnIndex];
+        const description = row[descriptionColunmIndex];
 
         if (!personFirstName || !personSector || !personLastName) {
           if (!personFirstName && !personSector && !description) {
-            const nextLine = jsonData[lineIndex + 1];
-            const nextLinePersonFirstName = nextLine[personFirstNameColunmIndex];
-            const nextLinePersonLastName = nextLine[personLastNameColunmIndex];
-            const nextLinePersonSector = nextLine[personSectorColumnIndex];
+            const nextRow = jsonData[rowIndex + 1];
+            const nextLinePersonFirstName = nextRow[personFirstNameColunmIndex];
+            const nextLinePersonLastName = nextRow[personLastNameColunmIndex];
+            const nextLinePersonSector = nextRow[personSectorColumnIndex];
             if (!nextLinePersonFirstName && !nextLinePersonLastName && !nextLinePersonSector) break;
           }
 
           response.results.push({
-            lineIndex,
+            rowIndex,
             success: false,
             error: `Dados ausentes para o campo de título`
           });
@@ -99,7 +99,7 @@ export class UpdateVideosUseCase {
           else if (!videoId) errorMsg = `Não foi possível obter o ID do vídeo "${upperCaseTitle}"`;
 
           response.results.push({
-            lineIndex,
+            rowIndex: rowIndex,
             success: false,
             error: errorMsg
           });
@@ -110,7 +110,7 @@ export class UpdateVideosUseCase {
         await this.updateVideoUseCase.execute({ id: videoId, title: upperCaseTitle, description });
 
         response.results.push({
-          lineIndex,
+          rowIndex: rowIndex,
           success: true,
           error: null,
         });

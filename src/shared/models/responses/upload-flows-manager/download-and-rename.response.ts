@@ -1,6 +1,6 @@
-export type UploadFlow2Response = {
+export type DownloadAndRenameResponse = {
   results: Array<{
-    lineIndex: number,
+    rowIndex: number,
     success: boolean,
     error: null | string
   }>
