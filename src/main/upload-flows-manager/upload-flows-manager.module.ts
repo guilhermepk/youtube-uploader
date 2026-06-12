@@ -14,43 +14,43 @@ import { GetFileUseCase } from "@main/file-manager/use-cases/get-file/get-file.u
   ]
 })
 export class UploadFlowsManagerModule implements OnApplicationBootstrap {
-  logger = new Logger(UploadFlowsManagerModule.name);
+  // logger = new Logger(UploadFlowsManagerModule.name);
 
-  constructor(
-    @Inject(UpdateVideosUseCase)
-    private readonly uploadFlow2UseCase: UpdateVideosUseCase,
+  // constructor(
+  //   @Inject(UpdateVideosUseCase)
+  //   private readonly uploadFlow2UseCase: UpdateVideosUseCase,
 
-    @Inject(GetFileUseCase)
-    private readonly getFileUseCase: GetFileUseCase
-  ) { }
+  //   @Inject(GetFileUseCase)
+  //   private readonly getFileUseCase: GetFileUseCase
+  // ) { }
 
   async onApplicationBootstrap() {
-    console.log('\n');
-    try {
-      const filePath = `C:\\Users\\Guilherme\\Downloads\\teste.xlsx`;
-      const file: File | null = await this.getFileUseCase.execute(filePath);
+    //   console.log('\n');
+    //   try {
+    //     const filePath = `C:\\Users\\Guilherme\\Downloads\\teste.xlsx`;
+    //     const file: File | null = await this.getFileUseCase.execute(filePath);
 
-      if (!file) throw new Error(`Erro ao obter o arquivo "${filePath}". O arquivo realmente existe?`);
+    //     if (!file) throw new Error(`Erro ao obter o arquivo "${filePath}". O arquivo realmente existe?`);
 
-      const response = await this.uploadFlow2UseCase.execute({
-        sheetData: {
-          file,
-          personFirstNameColunmIndex: 0,
-          personLastNameColunmIndex: 1,
-          personSectorColumnIndex: 2,
-          descriptionColunmIndex: 3,
-        },
-        playlist: {
-          id: 'PLHvogOXMIOMU58YqADqXMKk-XSnEoIF68',
-          name: 'Playlist de teste',
-          itemCount: 2
-        }
-      });
+    //     const response = await this.uploadFlow2UseCase.execute({
+    //       sheetData: {
+    //         file,
+    //         personFirstNameColunmIndex: 0,
+    //         personLastNameColunmIndex: 1,
+    //         personSectorColumnIndex: 2,
+    //         descriptionColunmIndex: 3,
+    //       },
+    //       playlist: {
+    //         id: 'PLHvogOXMIOMU58YqADqXMKk-XSnEoIF68',
+    //         name: 'Playlist de teste',
+    //         itemCount: 2
+    //       }
+    //     });
 
-      this.logger.log(response)
-    } catch (error: any) {
-      this.logger.error(error.message ?? error, error);
-    }
-    console.log('\n');
+    //     this.logger.log(response)
+    //   } catch (error: any) {
+    //     this.logger.error(error.message ?? error, error);
+    //   }
+    //   console.log('\n');
   }
 }
