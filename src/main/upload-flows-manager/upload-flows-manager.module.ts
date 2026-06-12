@@ -1,5 +1,5 @@
 import { Inject, Logger, Module, OnApplicationBootstrap } from "@nestjs/common";
-import { UpdateVideosPart1UseCase } from "./use-cases/update-videos-part-1/update-videos-part-1.use-case";
+import { UpdateVideosUseCase } from "./use-cases/update-videos/update-videos.use-case";
 import { FileManagerModule } from "@main/file-manager/file-manager.module";
 import { YoutubeModule } from "@main/apis/google/youtube/youtube.module";
 import { GetFileUseCase } from "@main/file-manager/use-cases/get-file/get-file.use-case";
@@ -10,15 +10,15 @@ import { GetFileUseCase } from "@main/file-manager/use-cases/get-file/get-file.u
     YoutubeModule
   ],
   providers: [
-    UpdateVideosPart1UseCase
+    UpdateVideosUseCase
   ]
 })
 export class UploadFlowsManagerModule implements OnApplicationBootstrap {
   logger = new Logger(UploadFlowsManagerModule.name);
 
   constructor(
-    @Inject(UpdateVideosPart1UseCase)
-    private readonly uploadFlow2UseCase: UpdateVideosPart1UseCase,
+    @Inject(UpdateVideosUseCase)
+    private readonly uploadFlow2UseCase: UpdateVideosUseCase,
 
     @Inject(GetFileUseCase)
     private readonly getFileUseCase: GetFileUseCase
