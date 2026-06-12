@@ -82,7 +82,7 @@ export class UpdateVideosUseCase {
 
         // Monta o Regex: Começa com o nome (^), seguido por 1 ou mais espaços (\s+), 
         // e termina com o setor ($). A flag 'i' ignora o case.
-        const regex = new RegExp(`^${safeFirstName} ${safeLastName}\\s+${safeSector}$`, 'i');
+        const regex = new RegExp(`^${safeFirstName} ${safeLastName}(?:\\s*-\\s*|\\s+)${safeSector}$`, 'i');
 
         const playlistItem: youtube_v3.Schema$PlaylistItem | undefined = playlistItems.find(
           item => regex.test(item.snippet?.title ?? '')
