@@ -2,7 +2,7 @@ import { GetPlaylistItemsUseCase } from "@main/apis/google/youtube/use-cases/get
 import { UpdateVideoUseCase } from "@main/apis/google/youtube/use-cases/update-video/update-video.use-case";
 import { tryCatch } from "@main/common/utils/try-catch";
 import { ReadSheetUseCase } from "@main/file-manager/use-cases/read-sheet/read-sheet.use-case";
-import { UploadFlow2Dto } from "@main/upload-flows-manager/models/upload-flow-2.dto";
+import { UpdateVideosDto } from "@main/upload-flows-manager/models/dtos/update-videos.dto";
 import { Inject, Injectable } from "@nestjs/common";
 import { UnprocessableContentError } from "@shared/models/errors/unprocessable-content.error";
 import { UploadFlow2Response } from "@shared/models/responses/upload-flows-manager/upload-flow-2.response";
@@ -22,7 +22,7 @@ export class UpdateVideosUseCase {
     private readonly updateVideoUseCase: UpdateVideoUseCase
   ) { }
 
-  async execute(data: UploadFlow2Dto): Promise<UploadFlow2Response> {
+  async execute(data: UpdateVideosDto): Promise<UploadFlow2Response> {
     return await tryCatch(async () => {
       const { sheetData, playlist: playlistData } = data;
       const {

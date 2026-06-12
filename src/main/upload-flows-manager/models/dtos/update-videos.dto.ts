@@ -1,4 +1,4 @@
-export class UploadFlow2Dto {
+export class UpdateVideosDto {
   sheetData: {
     file: File;
     personFirstNameColunmIndex: number;
