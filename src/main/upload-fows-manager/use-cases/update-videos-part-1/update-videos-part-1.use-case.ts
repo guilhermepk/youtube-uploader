@@ -10,7 +10,7 @@ import { youtube_v3 } from "googleapis";
 import * as XLSX from 'xlsx';
 
 @Injectable()
-export class UploadFlow2UseCase {
+export class UpdateVideosPart1UseCase {
   constructor(
     @Inject(ReadSheetUseCase)
     private readonly readSheetUseCase: ReadSheetUseCase,

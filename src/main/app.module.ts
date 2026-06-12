@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
 import { GoogleModule } from './apis/google/google.module';
 import { FileManagerModule } from './file-manager/file-manager.module';
-import { UploadFlowsManagerModule } from './upload-fows-manager/upload-fows-manager.module';
+import { UploadFlowsManagerModule } from './upload-fows-manager/upload-flows-manager.module';
 import { SecureDataManagerModule } from './secure-data-manager/secure-data-manager.module';
 
 @Module({
