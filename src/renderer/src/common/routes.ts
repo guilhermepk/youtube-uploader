@@ -1,4 +1,4 @@
-import Flow2Page from "@renderer/pages/flow-2/Flow2Page";
+import UpdateVideosFlowPage from "@renderer/pages/update-videos-flow/UpdateVideosFlowPage";
 import FullFlowPage from "@renderer/pages/FullFlowPage";
 import HomePage from "@renderer/pages/home/HomePage";
 import LoginPage from "@renderer/pages/LoginPage";
@@ -16,8 +16,8 @@ export const routes = {
     path: '/full-flow',
     element: FullFlowPage
   },
-  flow2Page: {
-    path: '/flow-2',
-    element: Flow2Page
+  updateVideosFlowPage: {
+    path: '/update-videos-flow',
+    element: UpdateVideosFlowPage
   }
 }

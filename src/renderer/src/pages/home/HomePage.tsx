@@ -1,5 +1,5 @@
 import Page from "@renderer/components/Page";
-import Flow2Card from "./components/Flow2Card";
+import UpdateVideosFlowCard from "./components/UpdateVideosFlowCard";
 // import FullFlowCard from "./components/FullFlowCard";
 
 export default function HomePage(): React.JSX.Element {
@@ -8,7 +8,7 @@ export default function HomePage(): React.JSX.Element {
       <h1> Bem-vindo ao Workspace </h1>
 
       {/* <FullFlowCard /> */}
-      <Flow2Card />
+      <UpdateVideosFlowCard />
     </Page>
   );
 }

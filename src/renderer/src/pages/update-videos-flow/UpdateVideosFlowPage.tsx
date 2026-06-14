@@ -8,7 +8,7 @@ import SheetUploadStep from "./components/SheetUploadStep";
 import Flow2StepTemplate from "./components/Flow2StepTemplate";
 import ColumnMappingStep from "./components/ColumnMappingStep";
 
-export default function Flow2Page(): React.JSX.Element {
+export default function UpdateVideosFlowPage(): React.JSX.Element {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
 
   // Estados do Step 1
@@ -105,7 +105,7 @@ function LocalNavbar(): React.JSX.Element {
   return (
     <div className="bg-[#1b1b1f] shadow-md w-full h-[60px] flex items-center gap-7 py-2 px-4">
       <BackButton />
-      <h1 className="text-[25px]! text-white"> Fluxo de upload 2 </h1>
+      <h1 className="text-[25px]! text-white"> Fluxo de atualização de vídeos </h1>
     </div>
   );
 }

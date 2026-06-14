@@ -13,7 +13,7 @@ export default function App(): React.JSX.Element {
           <Route element={<NavbarLayout />}>
             <Route path={routes.homePage.path} element={<routes.homePage.element />} />
             <Route path={routes.fullFlowPage.path} element={<routes.fullFlowPage.element />} />
-            <Route path={routes.flow2Page.path} element={<routes.flow2Page.element />} />
+            <Route path={routes.updateVideosFlowPage.path} element={<routes.updateVideosFlowPage.element />} />
           </Route>
         </Route>
       </Routes>
