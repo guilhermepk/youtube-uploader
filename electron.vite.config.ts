@@ -23,10 +23,18 @@ export default defineConfig({
     }
   },
   renderer: {
+    root: resolve(__dirname, 'src/renderer'),
+    build: {
+      rollupOptions: {
+        input: {
+          index: resolve(__dirname, 'src/renderer/index.html')
+        }
+      }
+    },
     resolve: {
       alias: {
         '@shared': resolve(__dirname, 'src/shared'),
-        '@renderer': resolve('src/renderer/src')
+        '@renderer': resolve(__dirname, 'src/renderer/src')
       }
     },
     plugins: [react({}), tailwindcss()]
