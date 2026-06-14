@@ -19,7 +19,6 @@ export default function UpdateVideosFlowPage(): React.JSX.Element {
   const [titleColumn, setTitleColumn] = useState('');
   const [descriptionColumn, setDescriptionColumn] = useState('');
 
-  // Lógica isolada para ler os cabeçalhos do Excel
   const extractHeadersFromFile = async (fileToRead: File) => {
     const data = await fileToRead.arrayBuffer();
     const workbook = XLSX.read(data, { type: 'array' });
@@ -70,8 +69,16 @@ export default function UpdateVideosFlowPage(): React.JSX.Element {
       canMoveToNextStep: isMappingValid
     },
     {
-      title: "Processar vídeos",
-      content: <Flow2StepTemplate><p className="text-white">Processamento usando as colunas: {titleColumn} e {descriptionColumn}</p></Flow2StepTemplate>
+      title: "Download automático",
+      content: <Flow2StepTemplate><p className="text-white">Selecione a pasta e o download será feito</p></Flow2StepTemplate>
+    },
+    {
+      title: "Upload manual",
+      content: <Flow2StepTemplate><p className="text-white">Faça o upload dos vídeos em uma playlist e informe aqui a playlist escolhida</p></Flow2StepTemplate>
+    },
+    {
+      title: "Atualização automática",
+      content: <Flow2StepTemplate><p className="text-white">As informações dos vídeos serão atualizadas</p></Flow2StepTemplate>
     },
   ];
 
