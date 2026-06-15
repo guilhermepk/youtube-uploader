@@ -1,4 +1,5 @@
-import Flow2StepTemplate from "./Flow2StepTemplate";
+import Select from "@renderer/components/Select";
+import UpdateVideoFlowStepTemplate from "./UpdateVideoFlowStepTemplate";
 
 interface ColumnMappingStepProps {
   headers: string[];
@@ -16,7 +17,7 @@ export default function ColumnMappingStep({
   onDescriptionColumnChange,
 }: ColumnMappingStepProps): React.JSX.Element {
   return (
-    <Flow2StepTemplate>
+    <UpdateVideoFlowStepTemplate>
       <div className="flex w-full max-w-sm flex-col gap-6">
         <div className="text-center">
           <h2 className="text-xl font-semibold text-white">Mapear Colunas</h2>
@@ -28,42 +29,20 @@ export default function ColumnMappingStep({
           </p>
         </div>
 
-        <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-gray-300">
-            Coluna de Título
-          </label>
-          <select
-            className="w-full rounded-md border border-gray-600 bg-[#1b1b1f] p-2 text-white outline-none focus:border-blue-500"
-            value={titleColumn}
-            onChange={(e) => onTitleColumnChange(e.target.value)}
-          >
-            <option value="" disabled>Selecione uma coluna</option>
-            {headers.map((header, index) => (
-              <option key={`${header}-${index}`} value={header}>
-                {header}
-              </option>
-            ))}
-          </select>
-        </div>
+        <Select
+          label="Coluna de Título"
+          value={titleColumn}
+          options={headers}
+          onChange={(newValue) => onTitleColumnChange(newValue)}
+        />
 
-        <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-gray-300">
-            Coluna de Descrição
-          </label>
-          <select
-            className="w-full rounded-md border border-gray-600 bg-[#1b1b1f] p-2 text-white outline-none focus:border-blue-500"
-            value={descriptionColumn}
-            onChange={(e) => onDescriptionColumnChange(e.target.value)}
-          >
-            <option value="" disabled>Selecione uma coluna</option>
-            {headers.map((header, index) => (
-              <option key={`${header}-${index}`} value={header}>
-                {header}
-              </option>
-            ))}
-          </select>
-        </div>
+        <Select
+          label="Coluna de Descrição"
+          value={descriptionColumn}
+          options={headers}
+          onChange={(newValue) => onDescriptionColumnChange(newValue)}
+        />
       </div>
-    </Flow2StepTemplate>
+    </UpdateVideoFlowStepTemplate>
   );
 }

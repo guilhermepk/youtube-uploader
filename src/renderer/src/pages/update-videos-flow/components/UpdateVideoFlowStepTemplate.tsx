@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 
-export default function Flow2StepTemplate({
+export default function UpdateVideoFlowStepTemplate({
   children
 }: { children: ReactNode }): React.JSX.Element {
   return (

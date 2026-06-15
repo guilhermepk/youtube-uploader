@@ -3,9 +3,8 @@ import Page from "@renderer/components/Page";
 import { StepItem, Stepper } from "@renderer/components/Stepper";
 import { useState } from "react";
 import * as XLSX from 'xlsx';
-
 import SheetUploadStep from "./components/SheetUploadStep";
-import Flow2StepTemplate from "./components/Flow2StepTemplate";
+import UpdateVideoFlowStepTemplate from "./components/UpdateVideoFlowStepTemplate";
 import ColumnMappingStep from "./components/ColumnMappingStep";
 
 export default function UpdateVideosFlowPage(): React.JSX.Element {
@@ -70,15 +69,15 @@ export default function UpdateVideosFlowPage(): React.JSX.Element {
     },
     {
       title: "Download automático",
-      content: <Flow2StepTemplate><p className="text-white">Selecione a pasta e o download será feito</p></Flow2StepTemplate>
+      content: <UpdateVideoFlowStepTemplate><p className="text-white">Selecione a pasta e o download será feito</p></UpdateVideoFlowStepTemplate>
     },
     {
       title: "Upload manual",
-      content: <Flow2StepTemplate><p className="text-white">Faça o upload dos vídeos em uma playlist e informe aqui a playlist escolhida</p></Flow2StepTemplate>
+      content: <UpdateVideoFlowStepTemplate><p className="text-white">Faça o upload dos vídeos em uma playlist e informe aqui a playlist escolhida</p></UpdateVideoFlowStepTemplate>
     },
     {
       title: "Atualização automática",
-      content: <Flow2StepTemplate><p className="text-white">As informações dos vídeos serão atualizadas</p></Flow2StepTemplate>
+      content: <UpdateVideoFlowStepTemplate><p className="text-white">As informações dos vídeos serão atualizadas</p></UpdateVideoFlowStepTemplate>
     },
   ];
 

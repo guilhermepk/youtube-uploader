@@ -1,5 +1,5 @@
 import { FileUpload } from "@renderer/components/FileUpload";
-import Flow2StepTemplate from "./Flow2StepTemplate";
+import UpdateVideoFlowStepTemplate from "./UpdateVideoFlowStepTemplate";
 
 interface SheetUploadStep {
   file: File | null;
@@ -10,8 +10,8 @@ export default function SheetUploadStep({
   onFileChange, file
 }: SheetUploadStep): React.JSX.Element {
   return (
-    <Flow2StepTemplate>
+    <UpdateVideoFlowStepTemplate>
       <FileUpload onFileChange={onFileChange} file={file} />
-    </Flow2StepTemplate>
+    </UpdateVideoFlowStepTemplate>
   );
 }
