@@ -2,7 +2,7 @@ import { useState, ChangeEvent, useEffect } from 'react';
 
 interface FileUploadProps {
   file: File | null;
-  onFileChange: React.Dispatch<React.SetStateAction<File | null>>
+  onFileChange: (newFile: File) => void
 }
 
 export function FileUpload({
@@ -17,7 +17,7 @@ export function FileUpload({
   };
 
   useEffect(() => {
-    onFileChange(file);
+    if (file) onFileChange(file);
   }, [file]);
 
   useEffect(() => {

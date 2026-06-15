@@ -6,17 +6,13 @@ import * as XLSX from 'xlsx';
 import SheetUploadStep from "./components/SheetUploadStep";
 import UpdateVideoFlowStepTemplate from "./components/UpdateVideoFlowStepTemplate";
 import ColumnMappingStep from "./components/ColumnMappingStep";
+import { ColumnData, useUpdateVideosFlow } from "@renderer/contexts/UpdateVideosFlowContext";
+
 
 export default function UpdateVideosFlowPage(): React.JSX.Element {
+  const { flowData, updateFlowData } = useUpdateVideosFlow();
+
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
-
-  // Estados do Step 1
-  const [file, setFile] = useState<File | null>(null);
-
-  // Estados do Step 2
-  const [headers, setHeaders] = useState<string[]>([]);
-  const [titleColumn, setTitleColumn] = useState('');
-  const [descriptionColumn, setDescriptionColumn] = useState('');
 
   const extractHeadersFromFile = async (fileToRead: File) => {
     const data = await fileToRead.arrayBuffer();
@@ -26,11 +22,14 @@ export default function UpdateVideosFlowPage(): React.JSX.Element {
     const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 }) as string[][];
 
     if (jsonData.length > 0) {
-      setHeaders(jsonData[0]);
+      const extractedHeaders: Array<ColumnData> = jsonData[0].map((header, index) => ({ header, index }));
+      updateFlowData({ extractedHeaders });
     }
   };
 
   function isSheetUploadValid(): boolean {
+    const { file } = flowData;
+
     if (!file) {
       window.alert('Envie um arquivo antes de prosseguir');
       return false;
@@ -41,8 +40,18 @@ export default function UpdateVideosFlowPage(): React.JSX.Element {
   }
 
   function isMappingValid(): boolean {
-    if (!titleColumn || !descriptionColumn) {
-      window.alert('Mapeie todas as colunas antes de prosseguir');
+    const { firstNameColumn, lastNameColumn, sectorColumn, urlColumn } = flowData;
+
+    if (!firstNameColumn || !lastNameColumn || !sectorColumn || !urlColumn) {
+      const fields: Array<{ name: string, value: any }> = [
+        { name: 'Nome', value: firstNameColumn },
+        { name: 'Sobrenome', value: lastNameColumn },
+        { name: 'Setor', value: sectorColumn },
+        { name: 'URL', value: urlColumn },
+      ];
+      const missing = fields.filter(item => !item.value);
+
+      window.alert(`Mapeie todas as colunas antes de prosseguir. Campos faltando:\n\n${missing.map((item, index) => `${index + 1} - "${item.name}"`).join(';\n')}`);
       return false;
     }
     return true;
@@ -51,19 +60,13 @@ export default function UpdateVideosFlowPage(): React.JSX.Element {
   const steps: Array<StepItem & { canMoveToNextStep?: () => boolean }> = [
     {
       title: "Upload da planilha",
-      content: <SheetUploadStep file={file} onFileChange={setFile} />,
+      content: <SheetUploadStep file={flowData.file ?? null} onFileChange={(newValue) => updateFlowData({ file: newValue })} />,
       canMoveToNextStep: isSheetUploadValid
     },
     {
       title: "Mapear Colunas",
       content: (
-        <ColumnMappingStep
-          headers={headers}
-          titleColumn={titleColumn}
-          descriptionColumn={descriptionColumn}
-          onTitleColumnChange={setTitleColumn}
-          onDescriptionColumnChange={setDescriptionColumn}
-        />
+        <ColumnMappingStep />
       ),
       canMoveToNextStep: isMappingValid
     },

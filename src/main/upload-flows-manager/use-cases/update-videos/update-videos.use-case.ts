@@ -2,7 +2,7 @@ import { GetPlaylistItemsUseCase } from "@main/apis/google/youtube/use-cases/get
 import { UpdateVideoUseCase } from "@main/apis/google/youtube/use-cases/update-video/update-video.use-case";
 import { tryCatch } from "@main/common/utils/try-catch";
 import { ReadSheetUseCase } from "@main/file-manager/use-cases/read-sheet/read-sheet.use-case";
-import { UpdateVideosDto } from "@main/upload-flows-manager/models/dtos/update-videos.dto";
+import { UpdateVideosDto } from "@shared/models/dtos/upload-flow-manager/update-videos.dto";
 import { Inject, Injectable } from "@nestjs/common";
 import { UnprocessableContentError } from "@shared/models/errors/unprocessable-content.error";
 import { UploadFlow2Response } from "@shared/models/responses/upload-flows-manager/update-videos.response";
@@ -24,12 +24,12 @@ export class UpdateVideosUseCase {
 
   async execute(data: UpdateVideosDto): Promise<UploadFlow2Response> {
     return await tryCatch(async () => {
-      const { sheetData, playlist: playlistData } = data;
+      const { sheetInfo: sheetData, playlist: playlistData } = data;
       const {
         file,
-        personFirstNameColumnIndex,
-        personLastNameColumnIndex,
-        personSectorColumnIndex,
+        firstNameColumnIndex,
+        lastNameColumnIndex,
+        sectorColumnIndex,
         descriptionColumnIndexes
       } = sheetData;
 
@@ -48,17 +48,17 @@ export class UpdateVideosUseCase {
 
       for (let rowIndex = 1; rowIndex < jsonData.length; rowIndex++) {
         const row = jsonData[rowIndex];
-        const personFirstName = row[personFirstNameColumnIndex];
-        const personLastName = row[personLastNameColumnIndex];
-        const personSector = row[personSectorColumnIndex];
+        const personFirstName = row[firstNameColumnIndex];
+        const personLastName = row[lastNameColumnIndex];
+        const personSector = row[sectorColumnIndex];
         const descriptionValues = descriptionColumnIndexes.map(descIndex => ({ header: jsonData[0][descIndex], value: row[descIndex] }));
 
         if (!personFirstName || !personSector || !personLastName) {
           if (!personFirstName && !personLastName && !personSector) {
             const nextRow = jsonData[rowIndex + 1];
-            const nextRowPersonFirstName = nextRow[personFirstNameColumnIndex];
-            const nextRowPersonLastName = nextRow[personLastNameColumnIndex];
-            const nextRowPersonSector = nextRow[personSectorColumnIndex];
+            const nextRowPersonFirstName = nextRow[firstNameColumnIndex];
+            const nextRowPersonLastName = nextRow[lastNameColumnIndex];
+            const nextRowPersonSector = nextRow[sectorColumnIndex];
             if (!nextRowPersonFirstName && !nextRowPersonLastName && !nextRowPersonSector) break;
           }
 

@@ -1,9 +1,9 @@
 export class UpdateVideosDto {
-  sheetData: {
+  sheetInfo: {
     file: File;
-    personFirstNameColumnIndex: number;
-    personLastNameColumnIndex: number;
-    personSectorColumnIndex: number;
+    firstNameColumnIndex: number;
+    lastNameColumnIndex: number;
+    sectorColumnIndex: number;
     descriptionColumnIndexes: Array<number>;
   }
   playlist: {

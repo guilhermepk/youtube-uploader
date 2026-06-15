@@ -1,6 +1,6 @@
 import { tryCatch } from "@main/common/utils/try-catch";
 import { ReadSheetUseCase } from "@main/file-manager/use-cases/read-sheet/read-sheet.use-case";
-import { DownloadAndRenameDto, SheetDataInDownloadAndRenameDto } from "@main/upload-flows-manager/models/dtos/download-and-rename.dto";
+import { DownloadAndRenameDto, SheetDataInDownloadAndRenameDto } from "@shared/models/dtos/upload-flow-manager/download-and-rename.dto";
 import { Inject, Injectable, Logger } from "@nestjs/common";
 import { DownloadAndRenameResponse } from "@shared/models/responses/upload-flows-manager/download-and-rename.response";
 import * as XLSX from 'xlsx';

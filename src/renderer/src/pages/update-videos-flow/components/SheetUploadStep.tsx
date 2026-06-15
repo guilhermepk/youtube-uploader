@@ -3,7 +3,7 @@ import UpdateVideoFlowStepTemplate from "./UpdateVideoFlowStepTemplate";
 
 interface SheetUploadStep {
   file: File | null;
-  onFileChange: React.Dispatch<React.SetStateAction<File | null>>
+  onFileChange: (newFile: File) => void
 }
 
 export default function SheetUploadStep({

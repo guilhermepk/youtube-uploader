@@ -58,6 +58,6 @@ export function AuthProvider(): JSX.Element {
 
 export function useAuth(): AuthContextType {
   const context = useContext(AuthContext);
-  if (!context) throw new Error('"useAuth" deve ser usado dentro de um "AuthProvider"');
+  if (!context) throw new Error(`"${useAuth.name}" deve ser usado dentro de um "${AuthProvider.name}"`);
   return context;
 }

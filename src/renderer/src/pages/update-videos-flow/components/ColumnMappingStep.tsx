@@ -1,21 +1,13 @@
-import Select from "@renderer/components/Select";
+import Select, { Option } from "@renderer/components/Select";
 import UpdateVideoFlowStepTemplate from "./UpdateVideoFlowStepTemplate";
+import { useUpdateVideosFlow } from "@renderer/contexts/UpdateVideosFlowContext";
 
-interface ColumnMappingStepProps {
-  headers: string[];
-  titleColumn: string;
-  descriptionColumn: string;
-  onTitleColumnChange: (value: string) => void;
-  onDescriptionColumnChange: (value: string) => void;
-}
+interface ColumnMappingStepProps { }
 
-export default function ColumnMappingStep({
-  headers,
-  titleColumn,
-  descriptionColumn,
-  onTitleColumnChange,
-  onDescriptionColumnChange,
-}: ColumnMappingStepProps): React.JSX.Element {
+export default function ColumnMappingStep({ }: ColumnMappingStepProps): React.JSX.Element {
+  const { flowData, updateFlowData } = useUpdateVideosFlow();
+  const headerOptions: Array<Option> = (flowData.extractedHeaders ?? []).map(header => ({ label: header.header, value: header.index }));
+
   return (
     <UpdateVideoFlowStepTemplate>
       <div className="flex w-full max-w-sm flex-col gap-6">
@@ -29,19 +21,41 @@ export default function ColumnMappingStep({
           </p>
         </div>
 
-        <Select
-          label="Coluna de Título"
-          value={titleColumn}
-          options={headers}
-          onChange={(newValue) => onTitleColumnChange(newValue)}
-        />
+        <div className="flex items-center justify-center gap-8 flex-wrap">
+          <Select
+            className="w-43"
+            label="Nome"
+            value={flowData.firstNameColumn ? { label: flowData.firstNameColumn?.header, value: flowData.firstNameColumn.index } : undefined}
+            options={headerOptions}
+            onChange={(newValue) => updateFlowData({ firstNameColumn: { header: newValue.label, index: newValue.value } })}
+          />
 
-        <Select
-          label="Coluna de Descrição"
-          value={descriptionColumn}
-          options={headers}
-          onChange={(newValue) => onDescriptionColumnChange(newValue)}
-        />
+          <Select
+            className="w-43"
+            label="Sobrenome"
+            value={flowData.lastNameColumn ? { label: flowData.lastNameColumn?.header, value: flowData.lastNameColumn.index } : undefined}
+            options={headerOptions}
+            onChange={(newValue) => updateFlowData({ lastNameColumn: { header: newValue.label, index: newValue.value } })}
+          />
+
+          <Select
+            className="w-43"
+            label="Setor"
+            value={flowData.sectorColumn ? { label: flowData.sectorColumn?.header, value: flowData.sectorColumn.index } : undefined}
+            options={headerOptions}
+            onChange={(newValue) => updateFlowData({ sectorColumn: { header: newValue.label, index: newValue.value } })}
+          />
+
+          {/* Multiselect pras colunas de descrição */}
+
+          <Select
+            className="w-43"
+            label="URL"
+            value={flowData.urlColumn ? { label: flowData.urlColumn?.header, value: flowData.urlColumn.index } : undefined}
+            options={headerOptions}
+            onChange={(newValue) => updateFlowData({ urlColumn: { header: newValue.label, index: newValue.value } })}
+          />
+        </div>
       </div>
     </UpdateVideoFlowStepTemplate>
   );
