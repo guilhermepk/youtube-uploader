@@ -36,7 +36,7 @@ export function FolderSelect({
       <button
         onClick={handleSelectFolder}
         className="
-          bg-blue-400 text-black
+          bg-blue-400 text-white
           text-sm font-medium
           py-2.5 px-6
           rounded-full

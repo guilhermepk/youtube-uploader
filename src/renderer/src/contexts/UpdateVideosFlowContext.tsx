@@ -13,7 +13,9 @@ type FlowData = {
   lastNameColumn?: ColumnData,
   sectorColumn?: ColumnData,
   descriptionColumns?: Array<ColumnData>
-  urlColumn?: ColumnData
+  urlColumn?: ColumnData,
+  downloadFolderPath?: string,
+  downloadsCompleted?: boolean
 }
 
 type UpdateVideosFlowContextType = {

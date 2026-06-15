@@ -58,6 +58,21 @@ export default function UpdateVideosFlowPage(): React.JSX.Element {
     return true;
   }
 
+  function isDownloadCompleted(): boolean {
+    const { downloadFolderPath, downloadsCompleted } = flowData;
+    if (!downloadFolderPath) {
+      window.alert('Selecione a pasta de destino de download dos vídeos');
+      return false;
+    }
+
+    if (!downloadsCompleted) {
+      window.alert('O download ainda não terminou. Aguarde.');
+      return false;
+    }
+
+    return true;
+  }
+
   const steps: Array<StepItem & { canMoveToNextStep?: () => boolean }> = [
     {
       title: "Upload da planilha",
@@ -65,13 +80,14 @@ export default function UpdateVideosFlowPage(): React.JSX.Element {
       canMoveToNextStep: isSheetUploadValid
     },
     {
-      title: "Mapear Colunas",
+      title: "Mapear colunas",
       content: <ColumnMappingStep />,
       canMoveToNextStep: isMappingValid
     },
     {
       title: "Download automático",
-      content: <DownloadStep />
+      content: <DownloadStep />,
+      canMoveToNextStep: isDownloadCompleted
     },
     {
       title: "Upload manual",
