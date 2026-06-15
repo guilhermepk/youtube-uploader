@@ -2,7 +2,10 @@ import { DownloadAndRenameDto } from "@shared/models/dtos/upload-flow-manager/do
 import { IpcResponse } from "@shared/models/interfaces/ipc-response.interface"
 import { GetGoogleUserDataResponse } from "@shared/models/responses/google/get-google-user-data.response"
 import { GetPlaylistsResponse } from "@shared/models/responses/google/youtube/get-playlists.response"
+import { SubscriptionResponse } from "@shared/models/responses/subscription.response"
 import { DownloadAndRenameResponse } from "@shared/models/responses/upload-flows-manager/download-and-rename.response"
+import { DownloadProgresSubscriptionPayload } from "@shared/models/subscription-payloads/download-progress.subscription-payload"
+import { TotalRowsSubscriptionPayload } from "@shared/models/subscription-payloads/total-rows.subscription-payload"
 
 export interface ContextBridgeApi {
   google: {
@@ -18,6 +21,8 @@ export interface ContextBridgeApi {
     getFilePath: (file: File) => string
   },
   uploadFlowsManager: {
-    downloadAndRename: (payload: DownloadAndRenameDto) => Promise<IpcResponse<DownloadAndRenameResponse>>
+    downloadAndRename: (paylad: DownloadAndRenameDto) => Promise<IpcResponse<DownloadAndRenameResponse>>,
+    onDownloadProgress: (callback: (payload: DownloadProgresSubscriptionPayload) => void) => SubscriptionResponse
+    onTotalRows: (callback: (payload: TotalRowsSubscriptionPayload) => void) => SubscriptionResponse
   },
 }

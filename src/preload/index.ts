@@ -6,6 +6,8 @@ import { GetGoogleUserDataResponse } from '@shared/models/responses/google/get-g
 import { GetPlaylistsResponse } from '@shared/models/responses/google/youtube/get-playlists.response'
 import { DownloadAndRenameResponse } from '@shared/models/responses/upload-flows-manager/download-and-rename.response'
 import { DownloadAndRenameDto } from '@shared/models/dtos/upload-flow-manager/download-and-rename.dto'
+import { DownloadAndRenameUseCase } from '@main/upload-flows-manager/use-cases/download-and-rename/download-and-rename.use-case'
+import { subscribe } from './utils/subscribe.util'
 
 const api: ContextBridgeApi = {
   google: {
@@ -25,7 +27,9 @@ const api: ContextBridgeApi = {
     getFilePath: (file: File): string => webUtils.getPathForFile(file)
   },
   uploadFlowsManager: {
-    downloadAndRename: (payload: DownloadAndRenameDto): Promise<IpcResponse<DownloadAndRenameResponse>> => ipcRenderer.invoke('upload-flows/download-and-rename', payload)
+    downloadAndRename: (payload: DownloadAndRenameDto): Promise<IpcResponse<DownloadAndRenameResponse>> => ipcRenderer.invoke('upload-flows/download-and-rename', payload),
+    onDownloadProgress: (callback) => subscribe(`${DownloadAndRenameUseCase.name}/progress`, callback),
+    onTotalRows: (callback) => subscribe(`${DownloadAndRenameUseCase.name}/total-rows`, callback)
   },
 }
 

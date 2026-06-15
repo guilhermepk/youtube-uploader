@@ -10,6 +10,9 @@ import axios from 'axios';
 import { InternalError } from "@shared/models/errors/internal.error";
 import { GetFileUseCase } from "@main/file-manager/use-cases/get-file/get-file.use-case";
 import { UnprocessableContentError } from "@shared/models/errors/unprocessable-content.error";
+import { BrowserWindow } from "electron";
+import { DownloadProgresSubscriptionPayload } from "@shared/models/subscription-payloads/download-progress.subscription-payload";
+import { TotalRowsSubscriptionPayload } from "@shared/models/subscription-payloads/total-rows.subscription-payload";
 
 type RowRelevantData = {
   url: string | undefined;
@@ -33,6 +36,7 @@ export class DownloadAndRenameUseCase {
   async execute(data: DownloadAndRenameDto): Promise<DownloadAndRenameResponse> {
     return await tryCatch(async () => {
       const { sheet, destinationFolderPath } = data;
+      const response: DownloadAndRenameResponse = { results: [] };
 
       if (!fs.existsSync(destinationFolderPath)) {
         fs.mkdirSync(destinationFolderPath, { recursive: true });
@@ -41,9 +45,10 @@ export class DownloadAndRenameUseCase {
 
       const sheetRows: Array<RowRelevantData> = await this.getSheetRows(sheet);
 
-      const response: DownloadAndRenameResponse = { results: [] };
+      const sheetRowsLength = sheetRows.length
+      this.emitTotalRows(sheetRowsLength - 1);
 
-      for (let rowIndex = 1; rowIndex < sheetRows.length; rowIndex++) {
+      for (let rowIndex = 1; rowIndex < sheetRowsLength; rowIndex++) {
         const row = sheetRows[rowIndex];
         const { url, personFirstName, personLastName, personSector } = row;
 
@@ -66,7 +71,7 @@ export class DownloadAndRenameUseCase {
         const fileName: string = `${personFirstName} ${personLastName} - ${personSector}`.toUpperCase();
         const filePath: string = this.handleFilePath(url, fileName, destinationFolderPath);
 
-        const downloadResult = await this.downloadVideo(url, filePath);
+        const downloadResult = await this.downloadVideo(url, filePath, rowIndex);
 
         response.results.push({
           rowIndex: rowIndex,
@@ -134,9 +139,15 @@ export class DownloadAndRenameUseCase {
     return finalDestination;
   }
 
-  private async downloadVideo(url: string, destinationPath: string): Promise<{ success: boolean, error: string | null }> {
+  private async downloadVideo(
+    url: string,
+    destinationPath: string,
+    rowIndex: number,
+  ): Promise<{ success: boolean, error: string | null }> {
     try {
-      this.logger.debug(`Iniciando o download em "${path.basename(destinationPath)}"`);
+      const basename = path.basename(destinationPath);
+
+      this.logger.debug(`Iniciando o download em "${basename}"`);
       this.logger.debug(`${url} -> "${destinationPath}"`);
 
       const writer = fs.createWriteStream(destinationPath);
@@ -148,13 +159,13 @@ export class DownloadAndRenameUseCase {
       });
 
       let downloadedBytes: number = 0;
-      this.handleProgress(response, (newValue) => { downloadedBytes = newValue });
+      this.handleProgress(response, (newValue) => { downloadedBytes = newValue }, rowIndex, basename);
 
       response.data.pipe(writer);
 
       return new Promise((resolve, _reject) => {
         writer.on('finish', () => {
-          this.logger.log(`Progresso: 100% (${this.bytesToMegaBytes(downloadedBytes).toFixed(2)} Mb). Download concluído para "${path.basename(destinationPath)}"`);
+          this.logger.log(`Progresso: 100% (${this.bytesToMegaBytes(downloadedBytes).toFixed(2)} Mb). Download concluído para "${basename}"`);
           resolve({ success: true, error: null });
         });
 
@@ -169,7 +180,12 @@ export class DownloadAndRenameUseCase {
     }
   }
 
-  private handleProgress(response: axios.AxiosResponse, updateDownloadedBytes: (newValue: number) => void): void {
+  private handleProgress(
+    response: axios.AxiosResponse,
+    updateDownloadedBytes: (newValue: number) => void,
+    rowIndex: number,
+    fileName: string
+  ): void {
     const contentLengthHeader = response.headers['content-length'];
     const totalLength: number | undefined = contentLengthHeader ? parseInt(contentLengthHeader as string, 10) : undefined;
     let downloadedBytes: number = 0;
@@ -181,20 +197,23 @@ export class DownloadAndRenameUseCase {
       downloadedBytes += chunk.length;
       updateDownloadedBytes(downloadedBytes);
       const downloadedMegaBytes: number = this.bytesToMegaBytes(downloadedBytes);
+      const formattedDownloadedMegaBytes: string = downloadedMegaBytes.toFixed(2);
+      let progress: string = '';
+
+      if (totalLength) {
+        const percentage = Math.round((downloadedBytes * 100) / totalLength);
+        const totalMegaBytes: string = this.bytesToMegaBytes(totalLength).toFixed(2)
+
+        progress = `${percentage}% (${formattedDownloadedMegaBytes} de ${totalMegaBytes}) Mb`;
+      } else progress = `${formattedDownloadedMegaBytes} Mb`;
+
+      this.emitProgress({ rowIndex, fileName, progress });
 
       if (canLog && downloadedBytes > 10 * 1024) {
         canLog = false;
         setTimeout(() => { canLog = true }, 1 * 1000);
-        const formattedDownloadedMegaBytes: string = downloadedMegaBytes.toFixed(2);
 
-        if (totalLength) {
-          const percentage = Math.round((downloadedBytes * 100) / totalLength);
-          const totalMegaBytes: string = this.bytesToMegaBytes(totalLength).toFixed(2)
-
-          this.logger.debug(`Progresso: ${percentage}% (${formattedDownloadedMegaBytes} de ${totalMegaBytes}) Mb`);
-        } else {
-          this.logger.debug(`Progresso: ${formattedDownloadedMegaBytes} Mb`);
-        }
+        this.logger.debug(`Progresso: ${progress}`);
       }
     });
   }
@@ -202,5 +221,20 @@ export class DownloadAndRenameUseCase {
   private bytesToMegaBytes(byteAmount: number): number {
     const megaByteAmount: number = Math.max((byteAmount / 1024 / 1024), 0);
     return megaByteAmount;
+  }
+
+  private emitProgress(progressData: DownloadProgresSubscriptionPayload): void {
+    this.emit(`${DownloadAndRenameUseCase.name}/progress`, progressData);
+  }
+
+  private emitTotalRows(totalRows: number): void {
+    const payload: TotalRowsSubscriptionPayload = { totalRows };
+    this.emit(`${DownloadAndRenameUseCase.name}/total-rows`, payload);
+  }
+
+  private emit(channel: string, payload: any): void {
+    BrowserWindow.getAllWindows().forEach((win) => {
+      win.webContents.send(channel, payload);
+    });
   }
 }

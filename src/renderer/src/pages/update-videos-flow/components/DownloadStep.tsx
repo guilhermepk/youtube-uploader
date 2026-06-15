@@ -8,6 +8,8 @@ import { DownloadAndRenameDto } from "@shared/models/dtos/upload-flow-manager/do
 export default function DownloadStep(): React.JSX.Element {
   const { flowData, updateFlowData } = useUpdateVideosFlow();
   const [startedDownload, setStartedDownload] = useState<boolean>(false);
+  const [completedDownload, setCompletedDownload] = useState<boolean>(false);
+  const [rows, setRows] = useState<Array<{ fileName?: string, progress?: string, error?: string | null }>>([]);
 
   async function downloadVideos(): Promise<void> {
     const { downloadFolderPath, sheetPath, firstNameColumn, lastNameColumn, sectorColumn, urlColumn } = flowData;
@@ -32,9 +34,8 @@ export default function DownloadStep(): React.JSX.Element {
 
     if (response.success) {
       const { results } = response.data;
-
-      const stringResults = results.map(item => `Linha ${item.rowIndex + 1}: ${item.success ? 'sucesso' : 'falha'}.${item.success ? '' : ` Motivo: ${item.error}`}`);
-      window.alert(`Resultado:\n\n${stringResults.join('\n')}`);
+      setRows(prev => [...prev].map((item, index) => ({ ...item, error: results[index].error })));
+      setCompletedDownload(true);
     } else {
       const { code, message, details } = response.error;
       window.alert(`Erro: ${code} | ${message} | ${details}`);
@@ -42,6 +43,20 @@ export default function DownloadStep(): React.JSX.Element {
   }
 
   async function handleDownload() {
+    window.api.uploadFlowsManager.onTotalRows((payload) => {
+      const { totalRows } = payload;
+      setRows(Array.from(new Array(totalRows), () => ({})));
+    });
+
+    window.api.uploadFlowsManager.onDownloadProgress((payload) => {
+      const { fileName, progress, rowIndex } = payload;
+      setRows(prev => {
+        const newList = [...prev];
+        newList[rowIndex - 1] = { fileName, progress };
+        return newList;
+      });
+    })
+
     setStartedDownload(true);
     await downloadVideos();
   }
@@ -61,7 +76,30 @@ export default function DownloadStep(): React.JSX.Element {
       )}
 
       {startedDownload && (
-        <p> Download iniciado </p>
+        <>
+          <p> Download {completedDownload ? 'concluído' : 'iniciado'} </p>
+        </>
+      )}
+
+      {startedDownload && (
+        <table className="bg-[#1b1b1f]">
+          <thead>
+            <th className="py-2 px-4 border-b"> Linha </th>
+            <th className="py-2 px-4 border-x"> Arquivo </th>
+            <th className="py-2 px-4 border-x"> Progresso </th>
+            <th className="py-2 px-4 border-b"> Resultado </th>
+          </thead>
+          <tbody>
+            {rows.map((row, index) => (
+              <tr>
+                <td className="py-2 px-4 border-t">{index + 1}</td>
+                <td className="py-2 px-4 border-t border-x">{row.fileName ?? 'N/A'}</td>
+                <td className="py-2 px-4 border-t border-x">{row.progress ?? 'N/A'}</td>
+                <td className="py-2 px-4 border-t">{row.error ?? row.error === null ? 'Sucesso' : 'N/A'}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       )}
     </UpdateVideoFlowStepTemplate>
   );
