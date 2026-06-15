@@ -27,8 +27,8 @@ export class UpdateVideosUseCase {
       const { sheetData, playlist: playlistData } = data;
       const {
         file,
-        personFirstNameColunmIndex,
-        personLastNameColunmIndex,
+        personFirstNameColumnIndex,
+        personLastNameColumnIndex,
         personSectorColumnIndex,
         descriptionColumnIndexes
       } = sheetData;
@@ -48,16 +48,16 @@ export class UpdateVideosUseCase {
 
       for (let rowIndex = 1; rowIndex < jsonData.length; rowIndex++) {
         const row = jsonData[rowIndex];
-        const personFirstName = row[personFirstNameColunmIndex];
-        const personLastName = row[personLastNameColunmIndex];
+        const personFirstName = row[personFirstNameColumnIndex];
+        const personLastName = row[personLastNameColumnIndex];
         const personSector = row[personSectorColumnIndex];
         const descriptionValues = descriptionColumnIndexes.map(descIndex => ({ header: jsonData[0][descIndex], value: row[descIndex] }));
 
         if (!personFirstName || !personSector || !personLastName) {
           if (!personFirstName && !personLastName && !personSector) {
             const nextRow = jsonData[rowIndex + 1];
-            const nextRowPersonFirstName = nextRow[personFirstNameColunmIndex];
-            const nextRowPersonLastName = nextRow[personLastNameColunmIndex];
+            const nextRowPersonFirstName = nextRow[personFirstNameColumnIndex];
+            const nextRowPersonLastName = nextRow[personLastNameColumnIndex];
             const nextRowPersonSector = nextRow[personSectorColumnIndex];
             if (!nextRowPersonFirstName && !nextRowPersonLastName && !nextRowPersonSector) break;
           }
