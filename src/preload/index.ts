@@ -18,6 +18,10 @@ const api: ContextBridgeApi = {
     youtube: {
       getPlaylists: (): Promise<IpcResponse<GetPlaylistsResponse>> => ipcRenderer.invoke('google/youtube/get-playlists')
     }
+  },
+
+  fileManager: {
+    dialogSelecFolder: (): Promise<IpcResponse<{ folderPath: string | null }>> => ipcRenderer.invoke('file-manager/dialog-select-folder')
   }
 }
 

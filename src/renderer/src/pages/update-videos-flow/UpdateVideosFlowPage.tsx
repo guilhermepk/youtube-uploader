@@ -7,6 +7,7 @@ import SheetUploadStep from "./components/SheetUploadStep";
 import UpdateVideoFlowStepTemplate from "./components/UpdateVideoFlowStepTemplate";
 import ColumnMappingStep from "./components/ColumnMappingStep";
 import { ColumnData, useUpdateVideosFlow } from "@renderer/contexts/UpdateVideosFlowContext";
+import DownloadStep from "./components/DownloadStep";
 
 
 export default function UpdateVideosFlowPage(): React.JSX.Element {
@@ -65,14 +66,12 @@ export default function UpdateVideosFlowPage(): React.JSX.Element {
     },
     {
       title: "Mapear Colunas",
-      content: (
-        <ColumnMappingStep />
-      ),
+      content: <ColumnMappingStep />,
       canMoveToNextStep: isMappingValid
     },
     {
       title: "Download automático",
-      content: <UpdateVideoFlowStepTemplate><p className="text-white">Selecione a pasta e o download será feito</p></UpdateVideoFlowStepTemplate>
+      content: <DownloadStep />
     },
     {
       title: "Upload manual",

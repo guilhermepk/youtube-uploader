@@ -11,5 +11,9 @@ export interface ContextBridgeApi {
     youtube: {
       getPlaylists: () => Promise<IpcResponse<GetPlaylistsResponse>>
     }
+  },
+
+  fileManager: {
+    dialogSelecFolder: () => Promise<IpcResponse<{ folderPath: string | null }>>
   }
 }
