@@ -1,12 +1,13 @@
-import Select, { Option } from "@renderer/components/Select";
+import Select, { Option as SelectOption } from "@renderer/components/Select";
 import UpdateVideoFlowStepTemplate from "./UpdateVideoFlowStepTemplate";
 import { useUpdateVideosFlow } from "@renderer/contexts/UpdateVideosFlowContext";
+import MultiSelect from "@renderer/components/MultiSelect";
 
 interface ColumnMappingStepProps { }
 
 export default function ColumnMappingStep({ }: ColumnMappingStepProps): React.JSX.Element {
   const { flowData, updateFlowData } = useUpdateVideosFlow();
-  const headerOptions: Array<Option> = (flowData.extractedHeaders ?? []).map(header => ({ label: header.header, value: header.index }));
+  const headerOptions: Array<SelectOption> = (flowData.extractedHeaders ?? []).map(header => ({ label: header.header, value: header.index }));
 
   return (
     <UpdateVideoFlowStepTemplate>
@@ -46,7 +47,13 @@ export default function ColumnMappingStep({ }: ColumnMappingStepProps): React.JS
             onChange={(newValue) => updateFlowData({ sectorColumn: { header: newValue.label, index: newValue.value } })}
           />
 
-          {/* Multiselect pras colunas de descrição */}
+          <MultiSelect
+            className="w-50"
+            label="Colunas da descrição"
+            value={flowData.descriptionColumns ? flowData.descriptionColumns.map((column) => ({ label: column.header, value: column.index })) : []}
+            options={headerOptions}
+            onChange={(newValues) => updateFlowData({ descriptionColumns: newValues.map(item => ({ header: item.label, index: item.value })) })}
+          />
 
           <Select
             className="w-50"
