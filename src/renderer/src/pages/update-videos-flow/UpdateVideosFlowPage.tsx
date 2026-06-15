@@ -81,15 +81,7 @@ export default function UpdateVideosFlowPage(): React.JSX.Element {
   const steps: Array<StepItem & { canMoveToNextStep?: () => boolean }> = [
     {
       title: "Upload da planilha",
-      content: <SheetUploadStep
-        file={flowData.sheet ?? null}
-        onFileChange={(newValue: File) => {
-          updateFlowData({
-            sheet: newValue,
-            sheetPath: window.api.fileManager.getFilePath(newValue)
-          });
-        }}
-      />,
+      content: <SheetUploadStep />,
       canMoveToNextStep: isSheetUploadValid
     },
     {

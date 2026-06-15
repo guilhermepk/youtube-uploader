@@ -1,17 +1,23 @@
 import { FileUpload } from "@renderer/components/FileUpload";
+import { useUpdateVideosFlow } from "@renderer/contexts/UpdateVideosFlowContext";
 import UpdateVideoFlowStepTemplate from "./UpdateVideoFlowStepTemplate";
 
-interface SheetUploadStep {
-  file: File | null;
-  onFileChange: (newFile: File) => void
-}
+interface SheetUploadStep { }
 
-export default function SheetUploadStep({
-  onFileChange, file
-}: SheetUploadStep): React.JSX.Element {
+export default function SheetUploadStep({ }: SheetUploadStep): React.JSX.Element {
+  const { flowData, updateFlowData } = useUpdateVideosFlow();
+
   return (
     <UpdateVideoFlowStepTemplate>
-      <FileUpload onFileChange={onFileChange} file={file} />
+      <FileUpload
+        file={flowData.sheet ?? null}
+        onFileChange={(newValue: File) => {
+          updateFlowData({
+            sheet: newValue,
+            sheetPath: window.api.fileManager.getFilePath(newValue)
+          });
+        }}
+      />
     </UpdateVideoFlowStepTemplate>
   );
 }
