@@ -30,7 +30,7 @@ export class UpdateVideosUseCase {
         personFirstNameColunmIndex,
         personLastNameColunmIndex,
         personSectorColumnIndex,
-        descriptionColunmIndex
+        descriptionColumnIndexes
       } = sheetData;
 
       const playlistItems = await this.getPlaylistItemsUseCase.execute(playlistData.id, playlistData.itemCount);
@@ -51,15 +51,15 @@ export class UpdateVideosUseCase {
         const personFirstName = row[personFirstNameColunmIndex];
         const personLastName = row[personLastNameColunmIndex];
         const personSector = row[personSectorColumnIndex];
-        const description = row[descriptionColunmIndex];
+        const descriptionValues = descriptionColumnIndexes.map(descIndex => ({ header: jsonData[0][descIndex], value: row[descIndex] }));
 
         if (!personFirstName || !personSector || !personLastName) {
-          if (!personFirstName && !personSector && !description) {
+          if (!personFirstName && !personLastName && !personSector) {
             const nextRow = jsonData[rowIndex + 1];
-            const nextLinePersonFirstName = nextRow[personFirstNameColunmIndex];
-            const nextLinePersonLastName = nextRow[personLastNameColunmIndex];
-            const nextLinePersonSector = nextRow[personSectorColumnIndex];
-            if (!nextLinePersonFirstName && !nextLinePersonLastName && !nextLinePersonSector) break;
+            const nextRowPersonFirstName = nextRow[personFirstNameColunmIndex];
+            const nextRowPersonLastName = nextRow[personLastNameColunmIndex];
+            const nextRowPersonSector = nextRow[personSectorColumnIndex];
+            if (!nextRowPersonFirstName && !nextRowPersonLastName && !nextRowPersonSector) break;
           }
 
           response.results.push({
@@ -91,6 +91,8 @@ export class UpdateVideosUseCase {
 
         const title = `${personFirstName} ${personLastName} - ${personSector}`;
         const upperCaseTitle = title.toUpperCase();
+
+        const description: string = descriptionValues.length > 0 ? descriptionValues.map(value => `${value.header}\n\n${value.value}`).join('\n\n\n') : '';
 
         if (!playlistItem || !videoId) {
           let errorMsg: string = '';

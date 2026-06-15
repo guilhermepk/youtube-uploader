@@ -4,7 +4,7 @@ export class UpdateVideosDto {
     personFirstNameColunmIndex: number;
     personLastNameColunmIndex: number;
     personSectorColumnIndex: number;
-    descriptionColunmIndex: number;
+    descriptionColumnIndexes: Array<number>;
   }
   playlist: {
     id: string;
