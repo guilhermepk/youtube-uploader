@@ -10,7 +10,7 @@ export default function ColumnMappingStep({ }: ColumnMappingStepProps): React.JS
 
   return (
     <UpdateVideoFlowStepTemplate>
-      <div className="flex w-full max-w-sm flex-col gap-6">
+      <div className="flex w-full flex-col gap-y-6">
         <div className="text-center">
           <h2 className="text-xl font-semibold text-white">Mapear Colunas</h2>
           <p className="mt-1 text-sm text-gray-400">
@@ -23,7 +23,7 @@ export default function ColumnMappingStep({ }: ColumnMappingStepProps): React.JS
 
         <div className="flex items-center justify-center gap-8 flex-wrap">
           <Select
-            className="w-43"
+            className="w-50"
             label="Nome"
             value={flowData.firstNameColumn ? { label: flowData.firstNameColumn?.header, value: flowData.firstNameColumn.index } : undefined}
             options={headerOptions}
@@ -31,7 +31,7 @@ export default function ColumnMappingStep({ }: ColumnMappingStepProps): React.JS
           />
 
           <Select
-            className="w-43"
+            className="w-50"
             label="Sobrenome"
             value={flowData.lastNameColumn ? { label: flowData.lastNameColumn?.header, value: flowData.lastNameColumn.index } : undefined}
             options={headerOptions}
@@ -39,7 +39,7 @@ export default function ColumnMappingStep({ }: ColumnMappingStepProps): React.JS
           />
 
           <Select
-            className="w-43"
+            className="w-50"
             label="Setor"
             value={flowData.sectorColumn ? { label: flowData.sectorColumn?.header, value: flowData.sectorColumn.index } : undefined}
             options={headerOptions}
@@ -49,7 +49,7 @@ export default function ColumnMappingStep({ }: ColumnMappingStepProps): React.JS
           {/* Multiselect pras colunas de descrição */}
 
           <Select
-            className="w-43"
+            className="w-50"
             label="URL"
             value={flowData.urlColumn ? { label: flowData.urlColumn?.header, value: flowData.urlColumn.index } : undefined}
             options={headerOptions}
