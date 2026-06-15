@@ -4,7 +4,7 @@ import { FolderSelect } from "@renderer/components/FolderSelect";
 import { useUpdateVideosFlow } from "@renderer/contexts/UpdateVideosFlowContext";
 
 export default function DownloadStep(): React.JSX.Element {
-  const { flowData, updateFlowData } = useUpdateVideosFlow();
+  const { flowData, updateFlowData, downloadVideos } = useUpdateVideosFlow();
 
   return (
     <UpdateVideoFlowStepTemplate>
@@ -14,7 +14,7 @@ export default function DownloadStep(): React.JSX.Element {
 
       <Button
         disabled={!flowData.downloadFolderPath}
-        onClick={() => window.alert('download')}
+        onClick={() => downloadVideos()}
       >
         Iniciar Download
       </Button>

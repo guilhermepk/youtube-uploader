@@ -1,6 +1,7 @@
 import { IpcError } from '../../../shared/models/errors/ipc.error'
 import { InternalError } from '../../../shared/models/errors/internal.error';
 import { IpcResponse } from '../../../shared/models/interfaces/ipc-response.interface';
+import { Logger } from '@nestjs/common';
 
 /**
  * Opções para customizar a tratativa do erro.
@@ -69,11 +70,16 @@ type ReturnType<OptionsType extends ErrorOptions> = OptionsType extends { handle
 export function handleError<OptionsType extends ErrorOptions>(error: any, errorOptions: OptionsType): ReturnType<OptionsType> {
   const { handleType, uncaughtErrorMessage } = errorOptions;
 
+  if (error instanceof IpcError === false) {
+    const logger = new Logger(handleError.name);
+    logger.error(error);
+  }
+
   const newError: IpcError = (error instanceof IpcError)
     ? error
     : new InternalError(
       `${uncaughtErrorMessage}`,
-      [`${error.message ?? error}`]
+      [error.message ?? error]
     );
 
   switch (handleType) {

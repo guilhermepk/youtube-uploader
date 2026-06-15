@@ -29,14 +29,19 @@ export default function UpdateVideosFlowPage(): React.JSX.Element {
   };
 
   function isSheetUploadValid(): boolean {
-    const { file } = flowData;
+    const { sheet, sheetPath } = flowData;
 
-    if (!file) {
+    if (!sheet) {
       window.alert('Envie um arquivo antes de prosseguir');
       return false;
     }
 
-    extractHeadersFromFile(file);
+    if (!sheetPath) {
+      window.alert('O caminho para o arquivo enviado não foi definido');
+      return false;
+    }
+
+    extractHeadersFromFile(sheet);
     return true;
   }
 
@@ -66,7 +71,7 @@ export default function UpdateVideosFlowPage(): React.JSX.Element {
     }
 
     if (!downloadsCompleted) {
-      window.alert('O download ainda não terminou. Aguarde.');
+      window.alert('O download ainda não terminou');
       return false;
     }
 
@@ -76,7 +81,15 @@ export default function UpdateVideosFlowPage(): React.JSX.Element {
   const steps: Array<StepItem & { canMoveToNextStep?: () => boolean }> = [
     {
       title: "Upload da planilha",
-      content: <SheetUploadStep file={flowData.file ?? null} onFileChange={(newValue) => updateFlowData({ file: newValue })} />,
+      content: <SheetUploadStep
+        file={flowData.sheet ?? null}
+        onFileChange={(newValue: File) => {
+          updateFlowData({
+            sheet: newValue,
+            sheetPath: window.api.fileManager.getFilePath(newValue)
+          });
+        }}
+      />,
       canMoveToNextStep: isSheetUploadValid
     },
     {

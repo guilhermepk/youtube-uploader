@@ -8,6 +8,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import axios from 'axios';
 import { InternalError } from "@shared/models/errors/internal.error";
+import { GetFileUseCase } from "@main/file-manager/use-cases/get-file/get-file.use-case";
+import { UnprocessableContentError } from "@shared/models/errors/unprocessable-content.error";
 
 type RowRelevantData = {
   url: string | undefined;
@@ -23,6 +25,9 @@ export class DownloadAndRenameUseCase {
   constructor(
     @Inject(ReadSheetUseCase)
     private readonly readSheetUseCase: ReadSheetUseCase,
+
+    @Inject(GetFileUseCase)
+    private readonly getFileUseCase: GetFileUseCase
   ) { }
 
   async execute(data: DownloadAndRenameDto): Promise<DownloadAndRenameResponse> {
@@ -78,9 +83,13 @@ export class DownloadAndRenameUseCase {
   private async getSheetRows(sheetData: SheetDataInDownloadAndRenameDto): Promise<Array<RowRelevantData>> {
     try {
 
-      const { file, personFirstNameColumnIndex, personLastNameColumnIndex, personSectorColumnIndex, urlColumnIndex } = sheetData;
+      const { sheetPath, firstNameColumnIndex, lastNameColumnIndex, sectorColumnIndex, urlColumnIndex } = sheetData;
 
-      const workbook: XLSX.WorkBook = await this.readSheetUseCase.execute(file);
+      const sheet: File | null = await this.getFileUseCase.execute(sheetPath);
+
+      if (!sheet) throw new UnprocessableContentError(`O arquivo não existe`, [sheetPath]);
+
+      const workbook: XLSX.WorkBook = await this.readSheetUseCase.execute(sheet);
       const firstSheetName: string = workbook.SheetNames[0];
       const firstSheet: XLSX.WorkSheet = workbook.Sheets[firstSheetName];
       const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 }) as Array<Array<string | undefined>>;
@@ -90,17 +99,17 @@ export class DownloadAndRenameUseCase {
       for (let rowIndex = 0; rowIndex < jsonData.length; rowIndex++) {
         const row = jsonData[rowIndex];
         const url = row[urlColumnIndex];
-        const personFirstName = row[personFirstNameColumnIndex];
-        const personLastName = row[personLastNameColumnIndex];
-        const personSector = row[personSectorColumnIndex];
+        const personFirstName = row[firstNameColumnIndex];
+        const personLastName = row[lastNameColumnIndex];
+        const personSector = row[sectorColumnIndex];
 
         if (!url && !personFirstName && !personLastName && !personSector) {
           if (rowIndex + 1 < jsonData.length) {
             const nextRow = jsonData[rowIndex + 1];
             const nextRowUrl = nextRow[urlColumnIndex];
-            const nextRowPersonFirstName = nextRow[personFirstNameColumnIndex];
-            const nextRowPersonLastName = nextRow[personLastNameColumnIndex];
-            const nextRowPersonSector = nextRow[personSectorColumnIndex];
+            const nextRowPersonFirstName = nextRow[firstNameColumnIndex];
+            const nextRowPersonLastName = nextRow[lastNameColumnIndex];
+            const nextRowPersonSector = nextRow[sectorColumnIndex];
 
             if (
               !nextRowUrl && !nextRowPersonFirstName

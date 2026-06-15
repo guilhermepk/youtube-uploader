@@ -1,9 +1,11 @@
-import { contextBridge, ipcRenderer } from 'electron'
+import { contextBridge, ipcRenderer, webUtils } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 import { ContextBridgeApi } from './api.interface'
 import { IpcResponse } from '@shared/models/interfaces/ipc-response.interface'
 import { GetGoogleUserDataResponse } from '@shared/models/responses/google/get-google-user-data.response'
 import { GetPlaylistsResponse } from '@shared/models/responses/google/youtube/get-playlists.response'
+import { DownloadAndRenameResponse } from '@shared/models/responses/upload-flows-manager/download-and-rename.response'
+import { DownloadAndRenameDto } from '@shared/models/dtos/upload-flow-manager/download-and-rename.dto'
 
 const api: ContextBridgeApi = {
   google: {
@@ -14,15 +16,17 @@ const api: ContextBridgeApi = {
       ipcRenderer.on('google-auth-success', subscription);
       return () => ipcRenderer.removeListener('google-auth-success', subscription);
     },
-
     youtube: {
       getPlaylists: (): Promise<IpcResponse<GetPlaylistsResponse>> => ipcRenderer.invoke('google/youtube/get-playlists')
     }
   },
-
   fileManager: {
-    dialogSelecFolder: (): Promise<IpcResponse<{ folderPath: string | null }>> => ipcRenderer.invoke('file-manager/dialog-select-folder')
-  }
+    dialogSelecFolder: (): Promise<IpcResponse<{ folderPath: string | null }>> => ipcRenderer.invoke('file-manager/dialog-select-folder'),
+    getFilePath: (file: File): string => webUtils.getPathForFile(file)
+  },
+  uploadFlowsManager: {
+    downloadAndRename: (payload: DownloadAndRenameDto): Promise<IpcResponse<DownloadAndRenameResponse>> => ipcRenderer.invoke('upload-flows/download-and-rename', payload)
+  },
 }
 
 if (process.contextIsolated) {

@@ -10,6 +10,7 @@ import { IpcGuard } from "../../guards/models/types/ipc-guard";
 import { useGuards } from "../../guards/use-guards";
 import { ClassConstructor } from "../types/class-constructor.type";
 import { BadRequestError } from '../../../shared/models/errors/bad-request.error'
+import { extractConstraints } from "./extract-constraints";
 
 type Handler<Dto, Response, UseCase> =
   | (() => IpcResponse<Response> | Promise<IpcResponse<Response>>)
@@ -57,6 +58,8 @@ export default function createIpcHandler<Dto, Response, UseCase>(
   handler: Handler<Dto, Response, UseCase>,
   options?: Options<Dto, UseCase>
 ): void {
+  const logger = new Logger(createIpcHandler.name);
+
   const { dtoClass, useCaseClass, guards } = options || {};
 
   async function finalHandler(_: IpcMainInvokeEvent, rawPayload: any = {}): Promise<IpcResponse<Response>> {
@@ -81,7 +84,7 @@ export default function createIpcHandler<Dto, Response, UseCase>(
             success: false,
             error: new BadRequestError(
               "Campos inválidos!",
-              (error as ValidationError[]).map(e => Object.values(e.constraints ?? {})).flat()
+              extractConstraints(error as ValidationError[])
             )
           };
         }
@@ -122,6 +125,5 @@ export default function createIpcHandler<Dto, Response, UseCase>(
   }
 
   ipcMain.handle(channel, finalHandler);
-  const logger = new Logger('createIpcHandler');
   logger.log(`Handler criado para o canal ${channel}`);
 }
