@@ -2,19 +2,33 @@ import { useState, ChangeEvent, useEffect } from 'react';
 
 interface FileUploadProps {
   file: File | null;
-  onFileChange: (newFile: File) => void
+  onFileChange: (newFile: File) => void;
 }
 
 export function FileUpload({
-  onFileChange, file: fatherComponentFile
+  onFileChange,
+  file: fatherComponentFile,
 }: FileUploadProps) {
   const [file, setFile] = useState<File | null>(fatherComponentFile);
 
   function handleFileChange(event: ChangeEvent<HTMLInputElement>): void {
-    if (event.target.files && event.target.files.length > 0) {
-      setFile(event.target.files[0]);
+    const selectedFile = event.target.files?.[0];
+
+    if (selectedFile) {
+      const isValid =
+        selectedFile.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || // .xlsx
+        selectedFile.type === 'application/vnd.ms-excel' || // .xls
+        selectedFile.type === 'text/csv' || // .csv
+        selectedFile.name.match(/\.(xlsx|xls|csv)$/i); // fallback de extensão
+
+      if (isValid) {
+        setFile(selectedFile);
+      } else {
+        alert('Por favor, selecione apenas arquivos de planilha (.xlsx, .xls, .csv).');
+        event.target.value = '';
+      }
     }
-  };
+  }
 
   useEffect(() => {
     if (file) onFileChange(file);
@@ -28,6 +42,8 @@ export function FileUpload({
     <div className="flex flex-col items-center">
       <input
         type="file"
+        // O atributo accept restringe as opções no explorador de arquivos
+        accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
         onChange={handleFileChange}
         // text-[0px] faz o texto nativo sumir e não ocupar espaço
         // file:mr-0 tira qualquer margem residual do botão
@@ -43,20 +59,15 @@ export function FileUpload({
             "
       />
 
-      <div className='flex flex-col items-center justify-center my-3'>
-        {file
-          ? (
-            <>
-              <p>
-                Arquivo selecionado:
-              </p>
-              <span className="text-neutral-400">
-                {file.name}
-              </span>
-            </>
-          )
-          : <p>Nenhum arquivo selecionado</p>
-        }
+      <div className="flex flex-col items-center justify-center my-3">
+        {file ? (
+          <>
+            <p>Arquivo selecionado:</p>
+            <span className="text-neutral-400">{file.name}</span>
+          </>
+        ) : (
+          <p>Nenhum arquivo selecionado</p>
+        )}
       </div>
     </div>
   );
