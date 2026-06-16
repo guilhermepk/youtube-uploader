@@ -8,7 +8,6 @@ import { DownloadAndRenameDto } from "@shared/models/dtos/upload-flow-manager/do
 export default function DownloadStep(): React.JSX.Element {
   const { flowData, updateFlowData } = useUpdateVideosFlow();
   const [downloadStarted, setDownloadStarted] = useState<boolean>(false);
-  const [downloadCompleted, setDownloadCompleted] = useState<boolean>(false);
   const [rows, setRows] = useState<Array<{ fileName?: string, progress?: string, error?: string | null }>>([]);
 
   async function downloadVideos(): Promise<void> {
@@ -35,7 +34,7 @@ export default function DownloadStep(): React.JSX.Element {
     if (response.success) {
       const { results } = response.data;
       setRows(prev => [...prev].map((item, index) => ({ ...item, error: results[index].error })));
-      setDownloadCompleted(true);
+      updateFlowData({ downloadsCompleted: true });
     } else {
       const { code, message, details } = response.error;
       window.alert(`Erro: ${code} | ${message} | ${details}`);
@@ -77,7 +76,7 @@ export default function DownloadStep(): React.JSX.Element {
 
       {downloadStarted && (
         <>
-          <p> Download {downloadCompleted ? 'concluído' : 'iniciado'} </p>
+          <p> Download {flowData.downloadsCompleted ? 'concluído' : 'iniciado'} </p>
         </>
       )}
 
