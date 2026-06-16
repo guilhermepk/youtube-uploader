@@ -11,10 +11,10 @@ app.setName('Youtube Uploader')
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
-    width: 750,
+    width: 900,
     minWidth: 750,
-    height: 750,
-    minHeight: 750,
+    height: 775,
+    minHeight: 775,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
