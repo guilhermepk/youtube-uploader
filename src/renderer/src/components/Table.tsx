@@ -1,0 +1,57 @@
+type Cell = string | {
+  value: string,
+  className: string
+}
+
+interface TableProps {
+  headers: Array<string>,
+  rows: Array<Array<Cell>>
+}
+
+export default function Table({
+  headers, rows
+}: TableProps): React.JSX.Element {
+  return (
+    <div className="h-min w-full overflow-y-auto shadow-lg shadow-[rgba(0,0,0,0.4)]">
+      <table className="bg-[#1b1b1f] w-full text-center">
+        <thead>
+          <tr>
+            {headers.map((header, headerIndex) => (
+              <th className={`
+                py-2 px-4
+                ${(headerIndex !== 0 && headerIndex !== headers.length - 1) ? 'border-x' : 'border-b'}
+              `}>
+                {header}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((cells, rowIndex) => (
+            <tr key={rowIndex}>
+              {cells.map((cell, cellIndex) => {
+                const isString = typeof cell === 'string';
+                const cellClassName = isString ? '' : cell.className;
+                const cellValue = isString ? cell : cell.value;
+
+                return (
+                  <td
+                    key={cellIndex}
+                    className={`
+                      py-2 px-4 border-t
+                      ${(cellIndex !== 0 && cellIndex !== cells.length - 1) ? 'border-x' : ''}
+                      border-[white]
+                      ${cellClassName}
+                    `}
+                  >
+                    {cellValue}
+                  </td>
+                )
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}

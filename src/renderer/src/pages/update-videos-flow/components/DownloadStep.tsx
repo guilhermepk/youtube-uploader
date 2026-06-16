@@ -4,6 +4,7 @@ import { FolderSelect } from "@renderer/components/FolderSelect";
 import { useUpdateVideosFlow } from "@renderer/contexts/UpdateVideosFlowContext";
 import { useState } from "react";
 import { DownloadAndRenameDto } from "@shared/models/dtos/upload-flow-manager/download-and-rename.dto";
+import Table from "@renderer/components/Table";
 
 export default function DownloadStep(): React.JSX.Element {
   const { flowData, updateFlowData, rows, setRows } = useUpdateVideosFlow();
@@ -46,7 +47,9 @@ export default function DownloadStep(): React.JSX.Element {
   async function handleDownload() {
     window.api.uploadFlowsManager.onTotalRows((payload) => {
       const { totalRows } = payload;
-      setRows(Array.from(new Array(totalRows), () => ({ rowIndex: -1 })));
+      const list: Array<{ rowIndex: number; }> = [];
+      for (let i = 0; i < totalRows; i++) { list.push({ rowIndex: i + 1 }) };
+      setRows(list);
     });
 
     window.api.uploadFlowsManager.onDownloadProgress((payload) => {
@@ -79,34 +82,23 @@ export default function DownloadStep(): React.JSX.Element {
       {(downloadStarted || flowData.downloadsCompleted) && (
         <>
           <p> Download {flowData.downloadsCompleted ? 'concluído' : 'iniciado'} </p>
-          <div className="h-min w-full overflow-y-auto shadow-lg shadow-[rgba(0,0,0,0.4)]">
-            <table className="bg-[#1b1b1f] w-full text-center">
-              <thead className="">
-                <tr>
-                  <th className="py-2 px-4 border-b"> Linha </th>
-                  <th className="py-2 px-4 border-x"> Arquivo </th>
-                  <th className="py-2 px-4 border-x"> Progresso </th>
-                  <th className="py-2 px-4 border-b"> Resultado </th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((row, index) => (
-                  <tr key={index} className={`${row.error ? '' : ''}`}>
-                    <td className="py-2 px-4 border-t border-[white]">{index + 2}</td>
-                    <td className="py-2 px-4 border-t border-x border-[white]">{row.fileName ?? 'N/A'}</td>
-                    <td className="py-2 px-4 border-t border-x border-[white]">{row.progress ?? 'N/A'}</td>
-                    <td className={`py-2 px-4 border-t border-[white] ${row.error === undefined ? 'opacity-50' : row.error == null ? 'text-[rgb(50,255,50)]' : 'text-[red]'}`}>
-                      {row.error === undefined
-                        ? 'N/A'
-                        : row.error === null
-                          ? 'Sucesso'
-                          : row.error}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+
+          <Table
+            headers={['Linha', 'Arquivo', 'Progresso', 'Resultado']}
+            rows={rows.map(row => ([
+              String(row.rowIndex),
+              row.fileName ?? 'N/A',
+              row.progress ?? 'N/A',
+              {
+                className: `${row.error === undefined ? 'opacity-50' : row.error == null ? 'text-[rgb(50,255,50)]' : 'text-[red]'}`,
+                value: row.error === undefined
+                  ? 'N/A'
+                  : row.error === null
+                    ? 'Sucesso'
+                    : row.error
+              }
+            ]))}
+          />
         </>
       )}
     </UpdateVideoFlowStepTemplate>
