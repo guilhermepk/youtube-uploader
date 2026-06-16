@@ -1,5 +1,5 @@
 export type Option = {
-  value: number;
+  value: number | string;
   label: string;
 }
 
@@ -22,7 +22,7 @@ export default function Select({
       <select
         className="w-full rounded-md border border-gray-600 bg-[#1b1b1f] p-2 text-white outline-none focus:border-blue-500"
         value={value?.value ?? 'default'}
-        onChange={(e) => onChange(options.find(option => option.value === Number(e.target.value)) ?? { value: -1, label: '-1' })}
+        onChange={(e) => onChange(options.find(option => String(option.value) === e.target.value) ?? { value: -1, label: '-1' })}
       >
         <option value="default" disabled>Selecione uma coluna</option>
         {options.map((option, index) => (

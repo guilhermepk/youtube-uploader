@@ -8,6 +8,7 @@ import UpdateVideoFlowStepTemplate from "./components/UpdateVideoFlowStepTemplat
 import ColumnMappingStep from "./components/ColumnMappingStep";
 import { ColumnData, useUpdateVideosFlow } from "@renderer/contexts/UpdateVideosFlowContext";
 import DownloadStep from "./components/DownloadStep";
+import SelectPlaylistStep from "./components/SelectPlaylistStep";
 
 
 export default function UpdateVideosFlowPage(): React.JSX.Element {
@@ -78,6 +79,14 @@ export default function UpdateVideosFlowPage(): React.JSX.Element {
     return true;
   }
 
+  function isPlaylistSelected(): boolean {
+    const { playlist } = flowData;
+    if (!playlist) {
+      window.alert('Selecione a playlist em que os vídeos foram manualmente cadastrados');
+      return false;
+    } else return true;
+  }
+
   const steps: Array<StepItem & { canMoveToNextStep?: () => boolean }> = [
     {
       title: "Upload da planilha",
@@ -95,8 +104,9 @@ export default function UpdateVideosFlowPage(): React.JSX.Element {
       canMoveToNextStep: isDownloadCompleted
     },
     {
-      title: "Upload manual",
-      content: <UpdateVideoFlowStepTemplate><p className="text-white">Faça o upload dos vídeos em uma playlist e informe aqui a playlist escolhida</p></UpdateVideoFlowStepTemplate>
+      title: "Selecionar playlist",
+      content: <SelectPlaylistStep />,
+      canMoveToNextStep: isPlaylistSelected
     },
     {
       title: "Atualização automática",

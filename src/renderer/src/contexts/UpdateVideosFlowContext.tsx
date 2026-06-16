@@ -1,3 +1,4 @@
+import { youtube_v3 } from "googleapis";
 import { createContext, useContext, useReducer } from "react"
 import { Outlet } from "react-router-dom";
 
@@ -16,7 +17,8 @@ type FlowData = {
   descriptionColumns?: Array<ColumnData>
   urlColumn?: ColumnData,
   downloadFolderPath?: string,
-  downloadsCompleted?: boolean
+  downloadsCompleted?: boolean,
+  playlist?: youtube_v3.Schema$Playlist
 }
 
 type UpdateVideosFlowContextType = {
