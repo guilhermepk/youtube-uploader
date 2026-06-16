@@ -75,7 +75,8 @@ export class DownloadAndRenameUseCase {
           response.results.push({
             rowIndex,
             success: false,
-            error: 'Vídeo duplicado'
+            error: 'Vídeo duplicado',
+            fileName
           });
           continue;
         }
@@ -88,6 +89,7 @@ export class DownloadAndRenameUseCase {
 
         response.results.push({
           rowIndex,
+          fileName,
           success: downloadResult.success,
           error: downloadResult.error,
         });

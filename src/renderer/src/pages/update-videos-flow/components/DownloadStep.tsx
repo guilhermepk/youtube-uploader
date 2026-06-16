@@ -33,7 +33,10 @@ export default function DownloadStep(): React.JSX.Element {
 
     if (response.success) {
       const { results } = response.data;
-      setRows(prev => [...prev].map((item, index) => ({ ...item, error: results[index].error })));
+      setRows(prev => [...prev].map((item, index) => {
+        const result = results[index];
+        return { ...item, error: result.error, fileName: result.fileName };
+      }));
       updateFlowData({ downloadsCompleted: true });
     } else {
       const { code, message, details } = response.error;
@@ -81,8 +84,8 @@ export default function DownloadStep(): React.JSX.Element {
       )}
 
       {downloadStarted && (
-        <div className="h-full w-full overflow-y-auto">
-          <table className="bg-[#1b1b1f] w-full">
+        <div className="h-full w-full overflow-y-auto shadow-lg shadow-[rgba(0,0,0,0.4)]">
+          <table className="bg-[#1b1b1f] w-full text-center">
             <thead className="">
               <tr>
                 <th className="py-2 px-4 border-b"> Linha </th>
@@ -93,11 +96,11 @@ export default function DownloadStep(): React.JSX.Element {
             </thead>
             <tbody>
               {rows.map((row, index) => (
-                <tr key={index}>
-                  <td className="py-2 px-4 border-t">{index + 2}</td>
-                  <td className="py-2 px-4 border-t border-x">{row.fileName ?? 'N/A'}</td>
-                  <td className="py-2 px-4 border-t border-x">{row.progress ?? 'N/A'}</td>
-                  <td className="py-2 px-4 border-t">
+                <tr key={index} className={`${row.error ? '' : ''}`}>
+                  <td className="py-2 px-4 border-t border-[white]">{index + 2}</td>
+                  <td className="py-2 px-4 border-t border-x border-[white]">{row.fileName ?? 'N/A'}</td>
+                  <td className="py-2 px-4 border-t border-x border-[white]">{row.progress ?? 'N/A'}</td>
+                  <td className={`py-2 px-4 border-t border-[white] ${row.error ? 'text-[red]' : 'text-[rgb(50,255,50)]'}`}>
                     {row.error === undefined
                       ? 'N/A'
                       : row.error === null
