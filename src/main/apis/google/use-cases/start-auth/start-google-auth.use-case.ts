@@ -6,7 +6,7 @@ import { googleAuthHtmlResponse } from "./google-auth-html-response";
 import { Auth } from 'googleapis';
 import { BrowserWindow, shell } from 'electron';
 import { BadGatewayError } from '../../../../../shared/models/errors/bad-gateway.error';
-import { SaveGoogleTokenUseCase } from '../../../../secure-data-manager/use-cases/save-google-token.use-case';
+import { SaveGoogleTokenUseCase } from '@main/secure-data-manager/use-cases/save-google-token/save-google-token.use-case';
 
 @Injectable()
 export class StartGoogleAuthUseCase {
