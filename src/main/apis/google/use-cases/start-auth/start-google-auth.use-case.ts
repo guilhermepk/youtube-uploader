@@ -10,6 +10,8 @@ import { SaveGoogleTokenUseCase } from '../../../../secure-data-manager/use-case
 
 @Injectable()
 export class StartGoogleAuthUseCase {
+  server: http.Server | null = null;
+
   constructor(
     @Inject(Auth.OAuth2Client)
     private readonly oAuth2Client: Auth.OAuth2Client,
@@ -20,37 +22,37 @@ export class StartGoogleAuthUseCase {
 
   async execute(): Promise<void> {
     return await tryCatch(async () => {
-      let server: http.Server | null = null;
-
       try {
-        server = http.createServer(async (request, response) => {
-          if (request.url) {
-            const querySearch = new url.URL(request.url, 'http://localhost:3000').searchParams;
-            const code: string | null = querySearch.get('code');
+        if (!this.server) {
+          this.server = http.createServer(async (request, response) => {
+            if (request.url) {
+              const querySearch = new url.URL(request.url, 'http://localhost:3000').searchParams;
+              const code: string | null = querySearch.get('code');
 
-            response.end(googleAuthHtmlResponse);
-            server?.close();
+              response.end(googleAuthHtmlResponse);
+              this.server?.close();
 
-            if (code) {
-              const tokens = await this.oAuth2Client.getToken(code).then(res => res.tokens);
-              const { access_token: accessToken, refresh_token: refreshToken } = tokens;
+              if (code) {
+                const tokens = await this.oAuth2Client.getToken(code).then(res => res.tokens);
+                const { access_token: accessToken, refresh_token: refreshToken } = tokens;
 
-              if (accessToken && refreshToken) {
-                this.oAuth2Client.setCredentials({ access_token: accessToken, refresh_token: refreshToken });
+                if (accessToken && refreshToken) {
+                  this.oAuth2Client.setCredentials({ access_token: accessToken, refresh_token: refreshToken });
 
-                await this.saveGoogleTokenUseCase.execute({ accessToken, refreshToken })
+                  await this.saveGoogleTokenUseCase.execute({ accessToken, refreshToken })
 
-                const tokenInfo = await this.oAuth2Client.getTokenInfo(accessToken)
-                  .catch(() => null);
+                  const tokenInfo = await this.oAuth2Client.getTokenInfo(accessToken)
+                    .catch(() => null);
 
-                BrowserWindow.getAllWindows().forEach((win) => {
-                  win.webContents.send('google-auth-success', { email: tokenInfo?.email ?? null });
-                });
+                  BrowserWindow.getAllWindows().forEach((win) => {
+                    win.webContents.send('google-auth-success', { email: tokenInfo?.email ?? null });
+                  });
 
-              } else throw new BadGatewayError('Não foi possível obter os tokens de autenticação do Google');
+                } else throw new BadGatewayError('Não foi possível obter os tokens de autenticação do Google');
+              }
             }
-          }
-        }).listen(3000);
+          }).listen(3000);
+        }
 
         const authUrl: string = this.oAuth2Client.generateAuthUrl({
           access_type: 'offline',
@@ -64,7 +66,7 @@ export class StartGoogleAuthUseCase {
 
         shell.openExternal(authUrl);
       } catch (error) {
-        if (server && server.listening) server.close();
+        if (this.server && this.server.listening) this.server.close();
         throw error;
       }
     }, 'Erro ao iniciar autenticação no Google')
