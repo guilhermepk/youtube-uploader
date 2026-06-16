@@ -6,9 +6,8 @@ import { useState } from "react";
 import { DownloadAndRenameDto } from "@shared/models/dtos/upload-flow-manager/download-and-rename.dto";
 
 export default function DownloadStep(): React.JSX.Element {
-  const { flowData, updateFlowData } = useUpdateVideosFlow();
+  const { flowData, updateFlowData, rows, setRows } = useUpdateVideosFlow();
   const [downloadStarted, setDownloadStarted] = useState<boolean>(false);
-  const [rows, setRows] = useState<Array<{ fileName?: string, progress?: string, error?: string | null, rowIndex: number }>>([]);
 
   async function downloadVideos(): Promise<void> {
     const { downloadFolderPath, sheetPath, firstNameColumn, lastNameColumn, sectorColumn, urlColumn } = flowData;
@@ -65,7 +64,7 @@ export default function DownloadStep(): React.JSX.Element {
 
   return (
     <UpdateVideoFlowStepTemplate>
-      {!downloadStarted && (
+      {!downloadStarted && !flowData.downloadsCompleted && (
         <>
           <p className="text-white">Selecione a pasta e o download será feito</p>
 
@@ -77,41 +76,38 @@ export default function DownloadStep(): React.JSX.Element {
         </>
       )}
 
-      {downloadStarted && (
+      {(downloadStarted || flowData.downloadsCompleted) && (
         <>
           <p> Download {flowData.downloadsCompleted ? 'concluído' : 'iniciado'} </p>
-        </>
-      )}
-
-      {downloadStarted && (
-        <div className="h-full w-full overflow-y-auto shadow-lg shadow-[rgba(0,0,0,0.4)]">
-          <table className="bg-[#1b1b1f] w-full text-center">
-            <thead className="">
-              <tr>
-                <th className="py-2 px-4 border-b"> Linha </th>
-                <th className="py-2 px-4 border-x"> Arquivo </th>
-                <th className="py-2 px-4 border-x"> Progresso </th>
-                <th className="py-2 px-4 border-b"> Resultado </th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((row, index) => (
-                <tr key={index} className={`${row.error ? '' : ''}`}>
-                  <td className="py-2 px-4 border-t border-[white]">{index + 2}</td>
-                  <td className="py-2 px-4 border-t border-x border-[white]">{row.fileName ?? 'N/A'}</td>
-                  <td className="py-2 px-4 border-t border-x border-[white]">{row.progress ?? 'N/A'}</td>
-                  <td className={`py-2 px-4 border-t border-[white] ${row.error ? 'text-[red]' : 'text-[rgb(50,255,50)]'}`}>
-                    {row.error === undefined
-                      ? 'N/A'
-                      : row.error === null
-                        ? 'Sucesso'
-                        : row.error}
-                  </td>
+          <div className="h-min w-full overflow-y-auto shadow-lg shadow-[rgba(0,0,0,0.4)]">
+            <table className="bg-[#1b1b1f] w-full text-center">
+              <thead className="">
+                <tr>
+                  <th className="py-2 px-4 border-b"> Linha </th>
+                  <th className="py-2 px-4 border-x"> Arquivo </th>
+                  <th className="py-2 px-4 border-x"> Progresso </th>
+                  <th className="py-2 px-4 border-b"> Resultado </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {rows.map((row, index) => (
+                  <tr key={index} className={`${row.error ? '' : ''}`}>
+                    <td className="py-2 px-4 border-t border-[white]">{index + 2}</td>
+                    <td className="py-2 px-4 border-t border-x border-[white]">{row.fileName ?? 'N/A'}</td>
+                    <td className="py-2 px-4 border-t border-x border-[white]">{row.progress ?? 'N/A'}</td>
+                    <td className={`py-2 px-4 border-t border-[white] ${row.error === undefined ? 'opacity-50' : row.error == null ? 'text-[rgb(50,255,50)]' : 'text-[red]'}`}>
+                      {row.error === undefined
+                        ? 'N/A'
+                        : row.error === null
+                          ? 'Sucesso'
+                          : row.error}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
     </UpdateVideoFlowStepTemplate>
   );

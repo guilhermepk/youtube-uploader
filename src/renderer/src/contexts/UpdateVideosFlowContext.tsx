@@ -1,5 +1,5 @@
 import { youtube_v3 } from "googleapis";
-import { createContext, useContext, useReducer } from "react"
+import { createContext, useContext, useReducer, useState } from "react"
 import { Outlet } from "react-router-dom";
 
 export type ColumnData = {
@@ -23,17 +23,25 @@ type FlowData = {
 
 type UpdateVideosFlowContextType = {
   flowData: FlowData,
-  updateFlowData: React.ActionDispatch<[next: FlowData]>
+  updateFlowData: React.ActionDispatch<[next: FlowData]>,
+  rows: Array<{ fileName?: string, progress?: string, error?: string | null, rowIndex: number }>,
+  setRows: React.Dispatch<React.SetStateAction<{
+    fileName?: string;
+    progress?: string;
+    error?: string | null;
+    rowIndex: number;
+  }[]>>
 }
 
 const UpdateVideosFlowContext = createContext<UpdateVideosFlowContextType | null>(null);
 
 export function UpdateVideosFlowProvider(): React.JSX.Element {
   const [flowData, updateFlowData] = useReducer((prev: FlowData, next: FlowData) => ({ ...prev, ...next }), {});
+  const [rows, setRows] = useState<Array<{ fileName?: string, progress?: string, error?: string | null, rowIndex: number }>>([]);
 
   return (
     <UpdateVideosFlowContext.Provider value={{
-      flowData, updateFlowData
+      flowData, updateFlowData, rows, setRows
     }}>
       <Outlet />
     </UpdateVideosFlowContext.Provider>
