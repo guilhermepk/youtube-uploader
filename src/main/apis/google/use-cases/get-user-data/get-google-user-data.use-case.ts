@@ -1,6 +1,6 @@
 import { tryCatch } from "@main/common/utils/try-catch";
 import { GoogleKeys } from "@main/secure-data-manager/models/types/google-keys.type";
-import { ReadGoogleTokenUseCase } from "@main/secure-data-manager/use-cases/red-google-token.use-case";
+import { ReadGoogleTokenUseCase } from "@main/secure-data-manager/use-cases/read-google-token.use-case";
 import { Inject, Injectable, Logger } from "@nestjs/common";
 import { GetGoogleUserDataResponse } from "@shared/models/responses/google/get-google-user-data.response";
 import { Auth, google } from "googleapis";

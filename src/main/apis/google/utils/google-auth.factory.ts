@@ -1,4 +1,4 @@
-import { ReadGoogleTokenUseCase } from "@main/secure-data-manager/use-cases/red-google-token.use-case";
+import { ReadGoogleTokenUseCase } from "@main/secure-data-manager/use-cases/read-google-token.use-case";
 import { Logger } from "@nestjs/common";
 import { Auth } from "googleapis";
 
