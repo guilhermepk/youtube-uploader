@@ -1,9 +1,9 @@
 import { useAuth } from '@renderer/contexts/AuthContext';
 import logo from '../assets/icon.png';
-import { useEffect } from 'react';
 import { LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { routes } from '@renderer/common/routes';
+import packageJson from '../../../../package.json';
 
 export default function Navbar(): React.JSX.Element {
   const navigate = useNavigate();
@@ -21,10 +21,6 @@ export default function Navbar(): React.JSX.Element {
     }
   }
 
-  useEffect(() => {
-    console.log(pictureUrl);
-  }, [pictureUrl]);
-
   return (
     <div
       className={`
@@ -35,10 +31,16 @@ export default function Navbar(): React.JSX.Element {
         p-2
       `}
     >
-      <img src={logo} width={60} height={60} className='cursor-pointer' onClick={() => navigate(routes.homePage.path)} />
+      <div className='flex items-center justify-center gap-2'>
+        <img src={logo} width={60} height={60} className='cursor-pointer' onClick={() => navigate(routes.homePage.path)} />
+
+        <p className='opacity-75'>
+          v{packageJson.version}
+        </p>
+      </div>
 
       {/* <div className='flex items-center justify-center gap-2 cursor-pointer border border-transparent hover:border-white p-2 rounded-[10px]'> */}
-      <div className='flex items-center justify-center gap-2p-2'>
+      <div className='flex items-center justify-center p-2'>
         <div className='flex flex-col items-center justify-center'>
           <p className='text-[15px]'> {userName} </p>
           <p className='text-[12px] opacity-50'> {email} </p>

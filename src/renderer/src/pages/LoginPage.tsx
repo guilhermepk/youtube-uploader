@@ -4,6 +4,7 @@ import { IpcResponse } from '@shared/models/interfaces/ipc-response.interface';
 import { useAuth } from '@renderer/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { routes } from '@renderer/common/routes';
+import packageJson from '../../../../package.json';
 
 export default function LoginPage(): React.JSX.Element {
   const { refreshAuthData } = useAuth();
@@ -53,6 +54,10 @@ export default function LoginPage(): React.JSX.Element {
         <img src={googleIcon} width={25} height={25} />
         Logar com o Google
       </button>
+
+      <p className='absolute opacity-75 bottom-0 mb-2'>
+        v{packageJson.version}
+      </p>
     </div>
   )
 }
