@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { GoogleKeys } from "../models/types/google-keys.type";
+import { GoogleKeys } from "../../models/types/google-keys.type";
 import { tryCatch } from "@main/common/utils/try-catch";
 import { ReadFileUseCase } from "@main/file-manager/use-cases/read/read-file.use-case";
 import { safeStorage } from "electron";
