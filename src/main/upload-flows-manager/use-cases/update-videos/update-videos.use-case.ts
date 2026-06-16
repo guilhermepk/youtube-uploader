@@ -5,9 +5,10 @@ import { ReadSheetUseCase } from "@main/file-manager/use-cases/read-sheet/read-s
 import { UpdateVideosDto } from "@shared/models/dtos/upload-flow-manager/update-videos.dto";
 import { Inject, Injectable } from "@nestjs/common";
 import { UnprocessableContentError } from "@shared/models/errors/unprocessable-content.error";
-import { UploadFlow2Response } from "@shared/models/responses/upload-flows-manager/update-videos.response";
+import { UpdateVideosResponse } from "@shared/models/responses/upload-flows-manager/update-videos.response";
 import { youtube_v3 } from "googleapis";
 import * as XLSX from 'xlsx';
+import { GetFileUseCase } from "@main/file-manager/use-cases/get-file/get-file.use-case";
 
 @Injectable()
 export class UpdateVideosUseCase {
@@ -19,14 +20,17 @@ export class UpdateVideosUseCase {
     private readonly getPlaylistItemsUseCase: GetPlaylistItemsUseCase,
 
     @Inject(UpdateVideoUseCase)
-    private readonly updateVideoUseCase: UpdateVideoUseCase
+    private readonly updateVideoUseCase: UpdateVideoUseCase,
+
+    @Inject(GetFileUseCase)
+    private readonly getFileUseCase: GetFileUseCase
   ) { }
 
-  async execute(data: UpdateVideosDto): Promise<UploadFlow2Response> {
+  async execute(data: UpdateVideosDto): Promise<UpdateVideosResponse> {
     return await tryCatch(async () => {
       const { sheetInfo: sheetData, playlist: playlistData } = data;
       const {
-        file,
+        filePath,
         firstNameColumnIndex,
         lastNameColumnIndex,
         sectorColumnIndex,
@@ -37,14 +41,18 @@ export class UpdateVideosUseCase {
 
       if (playlistItems.length < 1) throw new UnprocessableContentError(`A playlist selecionada está vazia`);
 
-      const workbook = await this.readSheetUseCase.execute(file);
+      const sheet = await this.getFileUseCase.execute(filePath);
+
+      if (!sheet) throw new UnprocessableContentError(`Arquivo não encontrado`, [filePath]);
+
+      const workbook = await this.readSheetUseCase.execute(sheet);
       const firstSheetName = workbook.SheetNames[0];
       const firstSheet = workbook.Sheets[firstSheetName];
       const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 }) as Array<Array<string | undefined>>;
 
       if (jsonData.length < 2) throw new UnprocessableContentError(`Não há dados na planilha enviada`);
 
-      const response: UploadFlow2Response = { results: [] };
+      const response: UpdateVideosResponse = { results: [] };
 
       for (let rowIndex = 1; rowIndex < jsonData.length; rowIndex++) {
         const row = jsonData[rowIndex];

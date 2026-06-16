@@ -1,4 +1,4 @@
-export type UploadFlow2Response = {
+export type UpdateVideosResponse = {
   results: Array<{
     rowIndex: number,
     success: boolean,

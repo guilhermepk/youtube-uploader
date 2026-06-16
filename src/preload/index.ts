@@ -29,7 +29,8 @@ const api: ContextBridgeApi = {
   uploadFlowsManager: {
     downloadAndRename: (payload: DownloadAndRenameDto): Promise<IpcResponse<DownloadAndRenameResponse>> => ipcRenderer.invoke('upload-flows/download-and-rename', payload),
     onDownloadProgress: (callback) => subscribe(`${DownloadAndRenameUseCase.name}/progress`, callback),
-    onTotalRows: (callback) => subscribe(`${DownloadAndRenameUseCase.name}/total-rows`, callback)
+    onTotalRows: (callback) => subscribe(`${DownloadAndRenameUseCase.name}/total-rows`, callback),
+    updateVideos: (payload) => ipcRenderer.invoke('upload-flows/update-videos', payload)
   },
 }
 

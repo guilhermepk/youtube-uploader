@@ -36,8 +36,6 @@ export default function SelectPlaylistStep(): React.JSX.Element {
         value={flowData.playlist ? { label: flowData.playlist.snippet?.title ?? 'Nome indefinido', value: flowData.playlist.id ?? '' } : undefined}
         options={playlists.map(item => ({ label: item.snippet?.title ?? '', value: item.id ?? '' }))}
         onChange={(newValue) => {
-          window.alert(`Essa bodega: ${newValue.label} | ${newValue.value}`)
-
           const playlist = playlists.find(item => item.id === newValue.value);
 
           updateFlowData({ playlist });

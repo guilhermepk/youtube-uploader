@@ -1,0 +1,91 @@
+import { UpdateVideosDto } from "@shared/models/dtos/upload-flow-manager/update-videos.dto";
+import UpdateVideoFlowStepTemplate from "./UpdateVideoFlowStepTemplate";
+import { useUpdateVideosFlow } from "@renderer/contexts/UpdateVideosFlowContext";
+import { useEffect, useState } from "react";
+
+export default function UpdateVideosStep(): React.JSX.Element {
+  const { flowData } = useUpdateVideosFlow();
+  const [flowStatus, setFlowStatus] = useState<'pending' | 'started' | 'ended'>('pending');
+
+  async function updateVideos(): Promise<void> {
+    setFlowStatus('started');
+
+    const {
+      playlist,
+      firstNameColumn,
+      lastNameColumn,
+      sectorColumn,
+      descriptionColumns,
+      sheetPath
+    } = flowData;
+
+    if (!playlist || !firstNameColumn || !lastNameColumn || !sectorColumn || !sheetPath) {
+      window.alert('Campos ausentes');
+      return;
+    }
+
+    if (!playlist.id) {
+      window.alert('ID da playlist ausente');
+      return;
+    }
+
+    const { itemCount: playlistItemCount } = playlist.contentDetails ?? {};
+    if (playlistItemCount === undefined || playlistItemCount === null) {
+      window.alert('"itemCount" ausente na playlist');
+      return;
+    }
+
+    const { title: playlistTitle } = playlist.snippet ?? {};
+    if (!playlistTitle) {
+      window.alert('Nome da playlist ausente');
+      return;
+    }
+
+    const dto: UpdateVideosDto = {
+      playlist: {
+        id: playlist.id,
+        itemCount: playlistItemCount,
+        name: playlistTitle
+      },
+      sheetInfo: {
+        filePath: sheetPath,
+        firstNameColumnIndex: firstNameColumn.index,
+        lastNameColumnIndex: lastNameColumn.index,
+        sectorColumnIndex: sectorColumn.index,
+        descriptionColumnIndexes: descriptionColumns ? descriptionColumns.map(item => item.index) : []
+      }
+    };
+
+    const response = await window.api.uploadFlowsManager.updateVideos(dto);
+
+    if (response.success) {
+      const { results } = response.data;
+      const stringResults = results.map(item => `${item.rowIndex + 1} - ${item.success ? 'sucesso' : 'falha'} - ${item.error}`);
+      window.alert(`Resultado:\n\n${stringResults.join(';\n')}`);
+      setFlowStatus('ended');
+    } else {
+      const { code, message, details } = response.error;
+      window.alert(`Erro: ${code} | ${message} | ${details}`);
+    }
+  }
+
+  useEffect(() => {
+    updateVideos();
+  }, []);
+
+  return (
+    <UpdateVideoFlowStepTemplate>
+      {flowStatus === 'pending' && (
+        <p className="text-white">As informações dos vídeos serão atualizadas</p>
+      )}
+
+      {flowStatus === 'started' && (
+        <p className="text-white">Os vídeos estão sendo atualizados</p>
+      )}
+
+      {flowStatus === 'ended' && (
+        <p className="text-white">O fluxo terminou.</p>
+      )}
+    </UpdateVideoFlowStepTemplate>
+  );
+}

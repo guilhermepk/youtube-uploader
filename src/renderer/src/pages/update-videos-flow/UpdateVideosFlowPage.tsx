@@ -9,6 +9,7 @@ import ColumnMappingStep from "./components/ColumnMappingStep";
 import { ColumnData, useUpdateVideosFlow } from "@renderer/contexts/UpdateVideosFlowContext";
 import DownloadStep from "./components/DownloadStep";
 import SelectPlaylistStep from "./components/SelectPlaylistStep";
+import UpdateVideosStep from "./components/UpdateVideosStep";
 
 
 export default function UpdateVideosFlowPage(): React.JSX.Element {
@@ -110,7 +111,7 @@ export default function UpdateVideosFlowPage(): React.JSX.Element {
     },
     {
       title: "Atualização automática",
-      content: <UpdateVideoFlowStepTemplate><p className="text-white">As informações dos vídeos serão atualizadas</p></UpdateVideoFlowStepTemplate>
+      content: <UpdateVideosStep />
     },
   ];
 
