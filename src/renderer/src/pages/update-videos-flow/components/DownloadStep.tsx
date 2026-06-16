@@ -7,8 +7,8 @@ import { DownloadAndRenameDto } from "@shared/models/dtos/upload-flow-manager/do
 
 export default function DownloadStep(): React.JSX.Element {
   const { flowData, updateFlowData } = useUpdateVideosFlow();
-  const [startedDownload, setStartedDownload] = useState<boolean>(false);
-  const [completedDownload, setCompletedDownload] = useState<boolean>(false);
+  const [downloadStarted, setDownloadStarted] = useState<boolean>(false);
+  const [downloadCompleted, setDownloadCompleted] = useState<boolean>(false);
   const [rows, setRows] = useState<Array<{ fileName?: string, progress?: string, error?: string | null }>>([]);
 
   async function downloadVideos(): Promise<void> {
@@ -35,7 +35,7 @@ export default function DownloadStep(): React.JSX.Element {
     if (response.success) {
       const { results } = response.data;
       setRows(prev => [...prev].map((item, index) => ({ ...item, error: results[index].error })));
-      setCompletedDownload(true);
+      setDownloadCompleted(true);
     } else {
       const { code, message, details } = response.error;
       window.alert(`Erro: ${code} | ${message} | ${details}`);
@@ -52,18 +52,18 @@ export default function DownloadStep(): React.JSX.Element {
       const { fileName, progress, rowIndex } = payload;
       setRows(prev => {
         const newList = [...prev];
-        newList[rowIndex - 1] = { fileName, progress };
+        newList[rowIndex - 1] = { fileName, progress, error: newList[rowIndex - 1].error };
         return newList;
       });
     })
 
-    setStartedDownload(true);
+    setDownloadStarted(true);
     await downloadVideos();
   }
 
   return (
     <UpdateVideoFlowStepTemplate>
-      {!startedDownload && (
+      {!downloadStarted && (
         <>
           <p className="text-white">Selecione a pasta e o download será feito</p>
 
@@ -75,23 +75,25 @@ export default function DownloadStep(): React.JSX.Element {
         </>
       )}
 
-      {startedDownload && (
+      {downloadStarted && (
         <>
-          <p> Download {completedDownload ? 'concluído' : 'iniciado'} </p>
+          <p> Download {downloadCompleted ? 'concluído' : 'iniciado'} </p>
         </>
       )}
 
-      {startedDownload && (
+      {downloadStarted && (
         <table className="bg-[#1b1b1f]">
           <thead>
-            <th className="py-2 px-4 border-b"> Linha </th>
-            <th className="py-2 px-4 border-x"> Arquivo </th>
-            <th className="py-2 px-4 border-x"> Progresso </th>
-            <th className="py-2 px-4 border-b"> Resultado </th>
+            <tr>
+              <th className="py-2 px-4 border-b"> Linha </th>
+              <th className="py-2 px-4 border-x"> Arquivo </th>
+              <th className="py-2 px-4 border-x"> Progresso </th>
+              <th className="py-2 px-4 border-b"> Resultado </th>
+            </tr>
           </thead>
           <tbody>
             {rows.map((row, index) => (
-              <tr>
+              <tr key={index}>
                 <td className="py-2 px-4 border-t">{index + 1}</td>
                 <td className="py-2 px-4 border-t border-x">{row.fileName ?? 'N/A'}</td>
                 <td className="py-2 px-4 border-t border-x">{row.progress ?? 'N/A'}</td>
