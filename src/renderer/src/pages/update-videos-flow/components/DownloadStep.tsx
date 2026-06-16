@@ -97,7 +97,13 @@ export default function DownloadStep(): React.JSX.Element {
                   <td className="py-2 px-4 border-t">{index + 2}</td>
                   <td className="py-2 px-4 border-t border-x">{row.fileName ?? 'N/A'}</td>
                   <td className="py-2 px-4 border-t border-x">{row.progress ?? 'N/A'}</td>
-                  <td className="py-2 px-4 border-t">{row.error ?? row.error === null ? 'Sucesso' : 'N/A'}</td>
+                  <td className="py-2 px-4 border-t">
+                    {row.error === undefined
+                      ? 'N/A'
+                      : row.error === null
+                        ? 'Sucesso'
+                        : row.error}
+                  </td>
                 </tr>
               ))}
             </tbody>
