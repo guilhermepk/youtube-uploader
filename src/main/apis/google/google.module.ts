@@ -6,6 +6,7 @@ import { StartGoogleAuthUseCase } from './use-cases/start-auth/start-google-auth
 import { YoutubeModule } from './youtube/youtube.module';
 import { googleAuthFactory } from './utils/google-auth.factory';
 import { GetGoogleUserDataUseCase } from './use-cases/get-user-data/get-google-user-data.use-case';
+import { GoogleLogoutUseCase } from './use-cases/logout/google-logout.use-case';
 
 @Module({
   imports: [
@@ -19,7 +20,8 @@ import { GetGoogleUserDataUseCase } from './use-cases/get-user-data/get-google-u
       inject: [ReadGoogleTokenUseCase]
     },
     StartGoogleAuthUseCase,
-    GetGoogleUserDataUseCase
+    GetGoogleUserDataUseCase,
+    GoogleLogoutUseCase
   ],
   exports: [
     Auth.OAuth2Client

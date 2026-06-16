@@ -9,6 +9,18 @@ export default function Navbar(): React.JSX.Element {
   const navigate = useNavigate();
   const { userName, pictureUrl, email } = useAuth();
 
+  async function handleLogout(): Promise<void> {
+    const response = await window.api.google.logout();
+
+    if (response.success) {
+      window.alert('Sessão do Google encerrada com sucesso');
+      navigate(routes.loginPage.path);
+    } else {
+      const { code, message, details } = response.error;
+      window.alert(`Erro: ${code} | ${message} | ${details}`);
+    }
+  }
+
   useEffect(() => {
     console.log(pictureUrl);
   }, [pictureUrl]);
@@ -42,6 +54,7 @@ export default function Navbar(): React.JSX.Element {
         )}
 
         <LogOut
+          onClick={handleLogout}
           size={40}
           className={`
             cursor-pointer

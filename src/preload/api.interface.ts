@@ -14,6 +14,7 @@ export interface ContextBridgeApi {
     startAuth: () => Promise<IpcResponse<null>>,
     getUserData: () => Promise<IpcResponse<GetGoogleUserDataResponse>>,
     onAuthSuccess: (callback: (payload: { email: string | null }) => void) => (() => void),
+    logout: () => Promise<IpcResponse<void>>;
     youtube: {
       getPlaylists: () => Promise<IpcResponse<GetPlaylistsResponse>>
     }

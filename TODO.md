@@ -1,1 +1,0 @@
-- [ ] Logout, tanto no google quando removendo as credenciais locais em memória e em arquivo

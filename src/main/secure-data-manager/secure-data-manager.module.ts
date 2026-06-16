@@ -1,8 +1,8 @@
 import { FileManagerModule } from "../file-manager/file-manager.module";
 import { Module } from "@nestjs/common";
-import { SaveGoogleTokenUseCase } from "./use-cases/save-google-token.use-case";
 import { ReadGoogleTokenUseCase } from "./use-cases/read-google-token/read-google-token.use-case";
 import { SaveGoogleTokenUseCase } from "./use-cases/save-google-token/save-google-token.use-case";
+import { DeleteGoogleTokenUseCase } from "./use-cases/delete-google-token/delete-google-token.use-case";
 
 @Module({
   imports: [
@@ -10,11 +10,13 @@ import { SaveGoogleTokenUseCase } from "./use-cases/save-google-token/save-googl
   ],
   providers: [
     SaveGoogleTokenUseCase,
-    ReadGoogleTokenUseCase
+    ReadGoogleTokenUseCase,
+    DeleteGoogleTokenUseCase
   ],
   exports: [
     SaveGoogleTokenUseCase,
-    ReadGoogleTokenUseCase
+    ReadGoogleTokenUseCase,
+    DeleteGoogleTokenUseCase
   ]
 })
 export class SecureDataManagerModule { }

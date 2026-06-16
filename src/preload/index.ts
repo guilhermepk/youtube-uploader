@@ -18,6 +18,7 @@ const api: ContextBridgeApi = {
       ipcRenderer.on('google-auth-success', subscription);
       return () => ipcRenderer.removeListener('google-auth-success', subscription);
     },
+    logout: (): Promise<IpcResponse<void>> => ipcRenderer.invoke('google/logout'),
     youtube: {
       getPlaylists: (): Promise<IpcResponse<GetPlaylistsResponse>> => ipcRenderer.invoke('google/youtube/get-playlists')
     }

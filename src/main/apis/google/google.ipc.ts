@@ -1,9 +1,11 @@
 import { registerGetGoogleUserDataIpc } from "./use-cases/get-user-data/get-google-user-data.ipc";
+import { registerGoogleLogoutIpc } from "./use-cases/logout/google-logout.ipc";
 import { registerStartGoogleAuthIpc } from "./use-cases/start-auth/start-google-auth.ipc";
 import { registerYoutubeIpc } from "./youtube/youtube.ipc";
 
 export function registerGoogleIpc() {
+  registerYoutubeIpc();
   registerStartGoogleAuthIpc();
   registerGetGoogleUserDataIpc();
-  registerYoutubeIpc();
+  registerGoogleLogoutIpc();
 }
