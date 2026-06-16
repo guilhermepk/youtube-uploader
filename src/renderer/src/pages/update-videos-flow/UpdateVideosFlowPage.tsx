@@ -4,17 +4,18 @@ import { StepItem, Stepper } from "@renderer/components/Stepper";
 import { useState } from "react";
 import * as XLSX from 'xlsx';
 import SheetUploadStep from "./components/SheetUploadStep";
-import UpdateVideoFlowStepTemplate from "./components/UpdateVideoFlowStepTemplate";
 import ColumnMappingStep from "./components/ColumnMappingStep";
 import { ColumnData, useUpdateVideosFlow } from "@renderer/contexts/UpdateVideosFlowContext";
 import DownloadStep from "./components/DownloadStep";
 import SelectPlaylistStep from "./components/SelectPlaylistStep";
 import UpdateVideosStep from "./components/UpdateVideosStep";
+import { useNavigate } from "react-router-dom";
+import { routes } from "@renderer/common/routes";
 
 
 export default function UpdateVideosFlowPage(): React.JSX.Element {
+  const navigate = useNavigate();
   const { flowData, updateFlowData } = useUpdateVideosFlow();
-
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
 
   const extractHeadersFromFile = async (fileToRead: File) => {
@@ -135,6 +136,7 @@ export default function UpdateVideosFlowPage(): React.JSX.Element {
           currentStepIndex={currentStepIndex}
           onPrevStep={prevStep}
           onNextStep={nextStep}
+          onFinish={() => navigate(routes.homePage.path)}
         />
       </div>
     </Page>

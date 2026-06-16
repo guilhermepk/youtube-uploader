@@ -3,13 +3,13 @@ import { ReactNode } from "react";
 interface ButtonProps {
   children: ReactNode,
   onClick: () => void,
-  disabled: boolean,
+  disabled?: boolean,
   className?: string,
   transparentBg?: boolean
 }
 
 export default function Button({
-  children, disabled, onClick, className, transparentBg = false
+  children, disabled = false, onClick, className, transparentBg = false
 }: ButtonProps): React.JSX.Element {
   return (
     <button

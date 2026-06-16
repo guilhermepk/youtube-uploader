@@ -13,9 +13,10 @@ interface StepperProps {
   currentStepIndex: number;
   onPrevStep: (currentStepIndex: number) => void;
   onNextStep: (currentStepIndex: number) => void;
+  onFinish: () => void;
 }
 
-export function Stepper({ steps, currentStepIndex, onNextStep, onPrevStep }: StepperProps) {
+export function Stepper({ steps, currentStepIndex, onNextStep, onPrevStep, onFinish }: StepperProps) {
   const [currentStep, setCurrentStep] = useState<StepItem>(steps[currentStepIndex]);
 
   useEffect(() => {
@@ -40,8 +41,11 @@ export function Stepper({ steps, currentStepIndex, onNextStep, onPrevStep }: Ste
         </Button>
 
         <Button
-          onClick={() => onNextStep(currentStepIndex)}
-          disabled={currentStepIndex === steps.length - 1}
+          onClick={
+            currentStepIndex === steps.length - 1
+              ? onFinish
+              : () => onNextStep(currentStepIndex)
+          }
         >
           {currentStepIndex === steps.length - 1 ? "Finalizar" : "Próximo"}
         </Button>
