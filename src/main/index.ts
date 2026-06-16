@@ -1,5 +1,5 @@
 import { app, shell, BrowserWindow } from 'electron'
-import { join } from 'path'
+import path, { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { bootstrapNestJS } from './bootstrap-nestjs'
@@ -11,6 +11,7 @@ app.setName('Youtube Uploader')
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
+    icon: path.join(__dirname, '../../build/icon.png'),
     width: 900,
     minWidth: 750,
     height: 775,
