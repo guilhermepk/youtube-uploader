@@ -127,13 +127,18 @@ export class UpdateVideosUseCase {
 
         const description: string = descriptionValues.length > 0 ? descriptionValues.map(value => `${value.header}\n\n${value.value}`).join('\n\n\n') : '';
 
-        await this.updateVideoUseCase.execute({ id: videoId, title: upperCaseTitle, description });
+        const updateResult = await this.updateVideoUseCase.execute({ id: videoId, title: upperCaseTitle, description });
 
         processedVideoIds.add(videoId);
         response.results.push({
-          rowIndex: rowIndex,
+          rowIndex,
           success: true,
           error: null,
+          uploadData: {
+            url: `https://www.youtube.com/watch?v=${updateResult.id}`,
+            title: updateResult.snippet?.title ?? 'Indefinido',
+            thumbnailUrl: updateResult.snippet?.thumbnails?.default?.url ?? ''
+          }
         });
       }
 

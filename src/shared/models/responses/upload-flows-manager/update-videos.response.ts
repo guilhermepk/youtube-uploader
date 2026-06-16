@@ -1,7 +1,14 @@
+export type ResultInUpdateVideosResponse = {
+  rowIndex: number,
+  success: boolean,
+  error: null | string,
+  uploadData?: {
+    url: string,
+    title: string,
+    thumbnailUrl: string
+  }
+}
+
 export type UpdateVideosResponse = {
-  results: Array<{
-    rowIndex: number,
-    success: boolean,
-    error: null | string
-  }>
+  results: Array<ResultInUpdateVideosResponse>;
 }

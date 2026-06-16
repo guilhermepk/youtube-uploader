@@ -1,6 +1,8 @@
-type Cell = string | {
-  value: string,
-  className: string
+import { ReactNode } from "react";
+
+type Cell = {
+  value: ReactNode,
+  className?: string
 }
 
 interface TableProps {
@@ -19,7 +21,7 @@ export default function Table({
             {headers.map((header, headerIndex) => (
               <th className={`
                 py-2 px-4
-                ${(headerIndex !== 0 && headerIndex !== headers.length - 1) ? 'border-x' : 'border-b'}
+                ${(headerIndex !== 0 && headerIndex !== headers.length - 1) ? 'border-x' : ''}
               `}>
                 {header}
               </th>
@@ -29,25 +31,19 @@ export default function Table({
         <tbody>
           {rows.map((cells, rowIndex) => (
             <tr key={rowIndex}>
-              {cells.map((cell, cellIndex) => {
-                const isString = typeof cell === 'string';
-                const cellClassName = isString ? '' : cell.className;
-                const cellValue = isString ? cell : cell.value;
-
-                return (
-                  <td
-                    key={cellIndex}
-                    className={`
+              {cells.map((cell, cellIndex) => (
+                <td
+                  key={cellIndex}
+                  className={`
                       py-2 px-4 border-t
                       ${(cellIndex !== 0 && cellIndex !== cells.length - 1) ? 'border-x' : ''}
                       border-[white]
-                      ${cellClassName}
+                      ${cell.className}
                     `}
-                  >
-                    {cellValue}
-                  </td>
-                )
-              })}
+                >
+                  {cell.value}
+                </td>
+              ))}
             </tr>
           ))}
         </tbody>

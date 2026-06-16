@@ -35,7 +35,7 @@ export default function DownloadStep(): React.JSX.Element {
       const { results } = response.data;
       setRows(prev => [...prev].map((item, index) => {
         const result = results[index];
-        return { ...item, error: result.error, fileName: result.fileName };
+        return { ...item, error: result.error, fileName: item.fileName ?? result.fileName };
       }));
       updateFlowData({ downloadsCompleted: true });
     } else {
@@ -85,10 +85,10 @@ export default function DownloadStep(): React.JSX.Element {
 
           <Table
             headers={['Linha', 'Arquivo', 'Progresso', 'Resultado']}
-            rows={rows.map(row => ([
-              String(row.rowIndex),
-              row.fileName ?? 'N/A',
-              row.progress ?? 'N/A',
+            rows={rows.map(row => [
+              { value: String(row.rowIndex) },
+              { value: row.fileName ?? 'N/A' },
+              { value: row.progress ?? 'N/A' },
               {
                 className: `${row.error === undefined ? 'opacity-50' : row.error == null ? 'text-[rgb(50,255,50)]' : 'text-[red]'}`,
                 value: row.error === undefined
@@ -97,7 +97,7 @@ export default function DownloadStep(): React.JSX.Element {
                     ? 'Sucesso'
                     : row.error
               }
-            ]))}
+            ])}
           />
         </>
       )}
