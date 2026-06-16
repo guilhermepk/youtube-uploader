@@ -8,11 +8,12 @@ interface SelectProps {
   onChange: (newValue: Option) => void,
   options: Array<Option>,
   label: string,
-  className?: string
+  className?: string,
+  defaultText?: string
 }
 
 export default function Select({
-  value, onChange, options, label, className
+  value, onChange, options, label, className, defaultText
 }: SelectProps) {
   return (
     <div className={`flex flex-col gap-2 ${className}`}>
@@ -24,7 +25,7 @@ export default function Select({
         value={value?.value ?? 'default'}
         onChange={(e) => onChange(options.find(option => String(option.value) === e.target.value) ?? { value: -1, label: '-1' })}
       >
-        <option value="default" disabled>Selecione uma coluna</option>
+        <option value="default" disabled>{defaultText ?? 'Escolha uma opção'}</option>
         {options.map((option, index) => (
           <option key={`${option}-${index}`} value={option.value}>
             {option.label}

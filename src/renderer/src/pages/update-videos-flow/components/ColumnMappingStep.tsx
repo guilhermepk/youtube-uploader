@@ -24,6 +24,7 @@ export default function ColumnMappingStep({ }: ColumnMappingStepProps): React.JS
 
         <div className="flex items-center justify-center gap-8 flex-wrap">
           <Select
+            defaultText="Escolha uma coluna"
             className="w-50"
             label="Nome"
             value={flowData.firstNameColumn ? { label: flowData.firstNameColumn?.header, value: flowData.firstNameColumn.index } : undefined}
@@ -32,6 +33,7 @@ export default function ColumnMappingStep({ }: ColumnMappingStepProps): React.JS
           />
 
           <Select
+            defaultText="Escolha uma coluna"
             className="w-50"
             label="Sobrenome"
             value={flowData.lastNameColumn ? { label: flowData.lastNameColumn?.header, value: flowData.lastNameColumn.index } : undefined}
@@ -40,6 +42,7 @@ export default function ColumnMappingStep({ }: ColumnMappingStepProps): React.JS
           />
 
           <Select
+            defaultText="Escolha uma coluna"
             className="w-50"
             label="Setor"
             value={flowData.sectorColumn ? { label: flowData.sectorColumn?.header, value: flowData.sectorColumn.index } : undefined}
@@ -56,6 +59,7 @@ export default function ColumnMappingStep({ }: ColumnMappingStepProps): React.JS
           />
 
           <Select
+            defaultText="Escolha uma coluna"
             className="w-50"
             label="URL"
             value={flowData.urlColumn ? { label: flowData.urlColumn?.header, value: flowData.urlColumn.index } : undefined}
