@@ -24,6 +24,7 @@ type RowRelevantData = {
 @Injectable()
 export class DownloadAndRenameUseCase {
   logger = new Logger(DownloadAndRenameUseCase.name);
+  processedVideoNames = new Set<string>();
 
   constructor(
     @Inject(ReadSheetUseCase)
@@ -69,18 +70,31 @@ export class DownloadAndRenameUseCase {
         }
 
         const fileName: string = `${personFirstName} ${personLastName} - ${personSector}`.toUpperCase();
+
+        if (this.processedVideoNames.has(fileName)) {
+          response.results.push({
+            rowIndex,
+            success: false,
+            error: 'Vídeo duplicado'
+          });
+          continue;
+        }
+
         const filePath: string = this.handleFilePath(url, fileName, destinationFolderPath);
 
         const downloadResult = await this.downloadVideo(url, filePath, rowIndex);
 
+        if (downloadResult.success) this.processedVideoNames.add(fileName);
+
         response.results.push({
-          rowIndex: rowIndex,
+          rowIndex,
           success: downloadResult.success,
           error: downloadResult.error,
         });
       }
 
       this.logger.log('Processamento de vídeos concluído');
+      this.processedVideoNames = new Set<string>();
       return response;
     }, `Erro ao baixar vídeos e renomeá-los`);
   }

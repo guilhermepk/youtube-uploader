@@ -53,6 +53,7 @@ export class UpdateVideosUseCase {
       if (jsonData.length < 2) throw new UnprocessableContentError(`Não há dados na planilha enviada`);
 
       const response: UpdateVideosResponse = { results: [] };
+      const processedVideoIds = new Set<string>();
 
       for (let rowIndex = 1; rowIndex < jsonData.length; rowIndex++) {
         const row = jsonData[rowIndex];
@@ -100,8 +101,6 @@ export class UpdateVideosUseCase {
         const title = `${personFirstName} ${personLastName} - ${personSector}`;
         const upperCaseTitle = title.toUpperCase();
 
-        const description: string = descriptionValues.length > 0 ? descriptionValues.map(value => `${value.header}\n\n${value.value}`).join('\n\n\n') : '';
-
         if (!playlistItem || !videoId) {
           let errorMsg: string = '';
 
@@ -117,8 +116,20 @@ export class UpdateVideosUseCase {
           continue;
         }
 
+        if (processedVideoIds.has(videoId)) {
+          response.results.push({
+            rowIndex: rowIndex,
+            success: false,
+            error: `Vídeo duplicado`
+          });
+          continue;
+        }
+
+        const description: string = descriptionValues.length > 0 ? descriptionValues.map(value => `${value.header}\n\n${value.value}`).join('\n\n\n') : '';
+
         await this.updateVideoUseCase.execute({ id: videoId, title: upperCaseTitle, description });
 
+        processedVideoIds.add(videoId);
         response.results.push({
           rowIndex: rowIndex,
           success: true,

@@ -1,10 +1,15 @@
 import { tryCatch } from "@main/common/utils/try-catch";
-import { Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable, Logger } from "@nestjs/common";
 import { Auth, youtube_v3 } from "googleapis";
 import { UpdateVideoDto } from "../../models/dtos/update-video.dto";
 
+// Função simples para aguardar em caso de falha
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
 @Injectable()
 export class UpdateVideoUseCase {
+  logger = new Logger(UpdateVideoUseCase.name)
+
   constructor(
     @Inject(youtube_v3.Youtube)
     private readonly youtubeClient: youtube_v3.Youtube,
@@ -16,21 +21,57 @@ export class UpdateVideoUseCase {
   async execute(data: UpdateVideoDto): Promise<youtube_v3.Schema$Video> {
     return await tryCatch(async () => {
       const { id, title, description } = data;
+      let retries = 3;
 
-      const response = await this.youtubeClient.videos.update({
-        auth: this.oAuth2Client,
-        part: ['snippet'],
-        requestBody: {
-          id,
-          snippet: {
+      while (retries > 0) {
+        try {
+          const videoResponse = await this.youtubeClient.videos.list({
+            auth: this.oAuth2Client,
+            part: ['snippet'],
+            id: [id],
+          });
+
+          const video = videoResponse.data.items?.[0];
+          if (!video || !video.snippet) {
+            throw new Error(`Vídeo não encontrado para o ID: ${id}`);
+          }
+
+          const updatedSnippet = {
+            ...video.snippet,
             title,
             description,
-            categoryId: '22'
-          }
-        }
-      });
+            categoryId: video.snippet.categoryId ?? '22',
+          };
 
-      return response.data;
+          const updateResponse = await this.youtubeClient.videos.update({
+            auth: this.oAuth2Client,
+            part: ['snippet'],
+            requestBody: {
+              id,
+              snippet: updatedSnippet,
+            }
+          });
+
+          if (!updateResponse.data) {
+            throw new Error(`A API do YouTube não retornou dados após atualizar o vídeo ${id}`);
+          }
+
+          return updateResponse.data;
+
+        } catch (error: any) {
+          retries--;
+
+          if ((error.code === 409 || error.code === 403 || error.code === 429) && retries > 0) {
+            this.logger.warn(`[YouTube API] Conflito ao atualizar vídeo ${id}. Tentando novamente...`);
+            await sleep(3000);
+            continue;
+          }
+
+          throw error;
+        }
+      }
+
+      throw new Error(`Não foi possível atualizar o vídeo ${id} após o número máximo de tentativas.`);
     }, `Erro ao editar vídeo`);
   }
 }

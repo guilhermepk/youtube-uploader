@@ -60,7 +60,7 @@ export default function UpdateVideosStep(): React.JSX.Element {
 
     if (response.success) {
       const { results } = response.data;
-      const stringResults = results.map(item => `${item.rowIndex + 1} - ${item.success ? 'sucesso' : 'falha'} - ${item.error}`);
+      const stringResults = results.map(item => `${item.rowIndex} - ${item.success ? 'sucesso' : 'falha'} - ${item.error}`);
       window.alert(`Resultado:\n\n${stringResults.join(';\n')}`);
       setFlowStatus('ended');
     } else {
