@@ -1,5 +1,5 @@
 export type Option = {
-  value: number;
+  value: number | string;
   label: string;
 }
 
@@ -25,8 +25,8 @@ export default function MultiSelect({
         className="w-full rounded-md border border-gray-600 bg-[#1b1b1f] p-2 text-white outline-none focus:border-blue-500"
         value={value.map(v => String(v.value))}
         onChange={(e) => {
-          const selectedValues = Array.from(e.target.selectedOptions, option => Number(option.value));
-          const selectedOptions = options.filter(option => selectedValues.includes(option.value));
+          const selectedValues = Array.from(e.target.selectedOptions, option => String(option.value));
+          const selectedOptions = options.filter(option => selectedValues.includes(String(option.value)));
           onChange(selectedOptions);
         }}
       >

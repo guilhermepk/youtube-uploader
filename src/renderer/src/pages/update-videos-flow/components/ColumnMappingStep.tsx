@@ -1,4 +1,4 @@
-import Select, { Option as SelectOption } from "@renderer/components/Select";
+import Select, { Option } from "@renderer/components/Select";
 import UpdateVideoFlowStepTemplate from "./UpdateVideoFlowStepTemplate";
 import { useUpdateVideosFlow } from "@renderer/contexts/UpdateVideosFlowContext";
 import MultiSelect from "@renderer/components/MultiSelect";
@@ -7,7 +7,7 @@ interface ColumnMappingStepProps { }
 
 export default function ColumnMappingStep({ }: ColumnMappingStepProps): React.JSX.Element {
   const { flowData, updateFlowData } = useUpdateVideosFlow();
-  const headerOptions: Array<SelectOption> = (flowData.extractedHeaders ?? []).map(header => ({ label: header.header, value: header.index }));
+  const headerOptions: Array<Option> = (flowData.extractedHeaders ?? []).map(header => ({ label: header.header, value: header.index }));
 
   return (
     <UpdateVideoFlowStepTemplate>
@@ -29,7 +29,7 @@ export default function ColumnMappingStep({ }: ColumnMappingStepProps): React.JS
             label="Nome"
             value={flowData.firstNameColumn ? { label: flowData.firstNameColumn?.header, value: flowData.firstNameColumn.index } : undefined}
             options={headerOptions}
-            onChange={(newValue) => updateFlowData({ firstNameColumn: { header: newValue.label, index: newValue.value } })}
+            onChange={(newValue) => updateFlowData({ firstNameColumn: { header: newValue.label, index: Number(newValue.value) } })}
           />
 
           <Select
@@ -38,7 +38,7 @@ export default function ColumnMappingStep({ }: ColumnMappingStepProps): React.JS
             label="Sobrenome"
             value={flowData.lastNameColumn ? { label: flowData.lastNameColumn?.header, value: flowData.lastNameColumn.index } : undefined}
             options={headerOptions}
-            onChange={(newValue) => updateFlowData({ lastNameColumn: { header: newValue.label, index: newValue.value } })}
+            onChange={(newValue) => updateFlowData({ lastNameColumn: { header: newValue.label, index: Number(newValue.value) } })}
           />
 
           <Select
@@ -47,7 +47,7 @@ export default function ColumnMappingStep({ }: ColumnMappingStepProps): React.JS
             label="Setor"
             value={flowData.sectorColumn ? { label: flowData.sectorColumn?.header, value: flowData.sectorColumn.index } : undefined}
             options={headerOptions}
-            onChange={(newValue) => updateFlowData({ sectorColumn: { header: newValue.label, index: newValue.value } })}
+            onChange={(newValue) => updateFlowData({ sectorColumn: { header: newValue.label, index: Number(newValue.value) } })}
           />
 
           <MultiSelect
@@ -55,7 +55,7 @@ export default function ColumnMappingStep({ }: ColumnMappingStepProps): React.JS
             label="Colunas da descrição"
             value={flowData.descriptionColumns ? flowData.descriptionColumns.map((column) => ({ label: column.header, value: column.index })) : []}
             options={headerOptions}
-            onChange={(newValues) => updateFlowData({ descriptionColumns: newValues.map(item => ({ header: item.label, index: item.value })) })}
+            onChange={(newValues) => updateFlowData({ descriptionColumns: newValues.map(item => ({ header: item.label, index: Number(item.value) })) })}
           />
 
           <Select
@@ -64,7 +64,7 @@ export default function ColumnMappingStep({ }: ColumnMappingStepProps): React.JS
             label="URL"
             value={flowData.urlColumn ? { label: flowData.urlColumn?.header, value: flowData.urlColumn.index } : undefined}
             options={headerOptions}
-            onChange={(newValue) => updateFlowData({ urlColumn: { header: newValue.label, index: newValue.value } })}
+            onChange={(newValue) => updateFlowData({ urlColumn: { header: newValue.label, index: Number(newValue.value) } })}
           />
         </div>
       </div>
