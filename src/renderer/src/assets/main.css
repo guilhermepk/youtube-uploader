@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@tailwind utilities;
 
 :root {
   display: flex;
@@ -45,4 +46,32 @@ h1 {
 
 h2 {
   font-size: 20px;
+}
+
+@layer base {
+  /* Define as dimensões gerais da barra */
+  ::-webkit-scrollbar {
+    width: 12px; /* Largura para scroll vertical */
+    height: 12px; /* Altura para scroll horizontal */
+    background-color: transparent;
+  }
+
+  /* O rastro/trilho (fundo onde a barra corre) */
+  ::-webkit-scrollbar-track {
+    background: #1f2937; /* ex: bg-gray-800 */
+    border-radius: 8px;
+  }
+
+  /* A barra em si (o que você arrasta) */
+  ::-webkit-scrollbar-thumb {
+    background: #4b5563; /* ex: bg-gray-600 */
+    border-radius: 8px;
+    /* O border transparente cria um "padding" visual dentro do trilho */
+    border: 3px solid #1f2937;
+  }
+
+  /* A cor da barra quando o mouse passa por cima */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #6b7280; /* ex: bg-gray-500 */
+  }
 }

@@ -8,7 +8,7 @@ import { DownloadAndRenameDto } from "@shared/models/dtos/upload-flow-manager/do
 export default function DownloadStep(): React.JSX.Element {
   const { flowData, updateFlowData } = useUpdateVideosFlow();
   const [downloadStarted, setDownloadStarted] = useState<boolean>(false);
-  const [rows, setRows] = useState<Array<{ fileName?: string, progress?: string, error?: string | null }>>([]);
+  const [rows, setRows] = useState<Array<{ fileName?: string, progress?: string, error?: string | null, rowIndex: number }>>([]);
 
   async function downloadVideos(): Promise<void> {
     const { downloadFolderPath, sheetPath, firstNameColumn, lastNameColumn, sectorColumn, urlColumn } = flowData;
@@ -44,14 +44,14 @@ export default function DownloadStep(): React.JSX.Element {
   async function handleDownload() {
     window.api.uploadFlowsManager.onTotalRows((payload) => {
       const { totalRows } = payload;
-      setRows(Array.from(new Array(totalRows), () => ({})));
+      setRows(Array.from(new Array(totalRows), () => ({ rowIndex: -1 })));
     });
 
     window.api.uploadFlowsManager.onDownloadProgress((payload) => {
       const { fileName, progress, rowIndex } = payload;
       setRows(prev => {
         const newList = [...prev];
-        newList[rowIndex - 1] = { fileName, progress, error: newList[rowIndex - 1].error };
+        newList[rowIndex - 1] = { fileName, progress, error: newList[rowIndex - 1].error, rowIndex };
         return newList;
       });
     })
@@ -81,26 +81,28 @@ export default function DownloadStep(): React.JSX.Element {
       )}
 
       {downloadStarted && (
-        <table className="bg-[#1b1b1f]">
-          <thead>
-            <tr>
-              <th className="py-2 px-4 border-b"> Linha </th>
-              <th className="py-2 px-4 border-x"> Arquivo </th>
-              <th className="py-2 px-4 border-x"> Progresso </th>
-              <th className="py-2 px-4 border-b"> Resultado </th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row, index) => (
-              <tr key={index}>
-                <td className="py-2 px-4 border-t">{index + 1}</td>
-                <td className="py-2 px-4 border-t border-x">{row.fileName ?? 'N/A'}</td>
-                <td className="py-2 px-4 border-t border-x">{row.progress ?? 'N/A'}</td>
-                <td className="py-2 px-4 border-t">{row.error ?? row.error === null ? 'Sucesso' : 'N/A'}</td>
+        <div className="h-full w-full overflow-y-auto">
+          <table className="bg-[#1b1b1f] w-full">
+            <thead className="">
+              <tr>
+                <th className="py-2 px-4 border-b"> Linha </th>
+                <th className="py-2 px-4 border-x"> Arquivo </th>
+                <th className="py-2 px-4 border-x"> Progresso </th>
+                <th className="py-2 px-4 border-b"> Resultado </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {rows.map((row, index) => (
+                <tr key={index}>
+                  <td className="py-2 px-4 border-t">{index + 2}</td>
+                  <td className="py-2 px-4 border-t border-x">{row.fileName ?? 'N/A'}</td>
+                  <td className="py-2 px-4 border-t border-x">{row.progress ?? 'N/A'}</td>
+                  <td className="py-2 px-4 border-t">{row.error ?? row.error === null ? 'Sucesso' : 'N/A'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </UpdateVideoFlowStepTemplate>
   );
