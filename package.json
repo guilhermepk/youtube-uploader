@@ -43,6 +43,7 @@
     "lucide-react": "^1.17.0",
     "react-router-dom": "^7.17.0",
     "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2",
     "tailwindcss": "^4.3.0",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.2/xlsx-0.20.2.tgz"
   },
@@ -56,7 +57,7 @@
     "@vitejs/plugin-react": "^5.1.1",
     "electron": "^39.2.6",
     "electron-builder": "^26.0.12",
-    "electron-vite": "^1.0.20",
+    "electron-vite": "^1.0.29",
     "eslint": "^9.39.1",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
@@ -69,7 +70,7 @@
   },
   "build": {
     "appId": "com.guilhermepk.youtube-uploader",
-    "productName": "Youtube Uploader",
+    "productName": "YouTube Uploader",
     "icon": "build/icon",
     "win": {
       "icon": "build/icon.ico",
