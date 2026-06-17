@@ -1,4 +1,4 @@
-import { Inject, Logger, Module, OnApplicationBootstrap } from "@nestjs/common";
+import { Module, OnApplicationBootstrap } from "@nestjs/common";
 import { UpdateVideosUseCase } from "./use-cases/update-videos/update-videos.use-case";
 import { FileManagerModule } from "@main/file-manager/file-manager.module";
 import { YoutubeModule } from "@main/apis/google/youtube/youtube.module";
