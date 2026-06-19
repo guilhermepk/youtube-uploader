@@ -49,12 +49,11 @@ export default function UpdateVideosFlowPage(): React.JSX.Element {
   }
 
   function isMappingValid(): boolean {
-    const { firstNameColumn, lastNameColumn, sectorColumn, urlColumn } = flowData;
+    const { firstNameColumn, sectorColumn, urlColumn } = flowData;
 
-    if (!firstNameColumn || !lastNameColumn || !sectorColumn || !urlColumn) {
+    if (!firstNameColumn || !sectorColumn || !urlColumn) {
       const fields: Array<{ name: string, value: any }> = [
         { name: 'Nome', value: firstNameColumn },
-        { name: 'Sobrenome', value: lastNameColumn },
         { name: 'Setor', value: sectorColumn },
         { name: 'URL', value: urlColumn },
       ];

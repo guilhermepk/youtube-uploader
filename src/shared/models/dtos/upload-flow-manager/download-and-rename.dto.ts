@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { ValidateNested, IsNumber, IsString, IsNotEmpty } from "class-validator";
+import { ValidateNested, IsNumber, IsString, IsNotEmpty, IsOptional } from "class-validator";
 
 export class SheetDataInDownloadAndRenameDto {
   @IsNotEmpty()
@@ -12,8 +12,9 @@ export class SheetDataInDownloadAndRenameDto {
   @IsNumber({}, { message: 'firstNameColumnIndex deve ser um número' })
   firstNameColumnIndex: number;
 
+  @IsOptional()
   @IsNumber({}, { message: 'lastNameColumnIndex deve ser um número' })
-  lastNameColumnIndex: number;
+  lastNameColumnIndex?: number;
 
   @IsNumber({}, { message: 'sectorColumnIndex deve ser um número' })
   sectorColumnIndex: number;

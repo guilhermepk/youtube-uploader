@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsArray, IsNotEmpty, IsNumber, IsString, ValidateNested } from "class-validator";
+import { IsArray, IsNotEmpty, IsNumber, IsString, ValidateNested, IsOptional } from "class-validator";
 
 class SheetInfo {
   @IsNotEmpty()
@@ -9,8 +9,9 @@ class SheetInfo {
   @IsNumber()
   firstNameColumnIndex: number;
 
+  @IsOptional()
   @IsNumber()
-  lastNameColumnIndex: number;
+  lastNameColumnIndex?: number;
 
   @IsNumber()
   sectorColumnIndex: number;

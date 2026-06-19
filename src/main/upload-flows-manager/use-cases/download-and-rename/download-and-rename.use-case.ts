@@ -54,10 +54,9 @@ export class DownloadAndRenameUseCase {
         const { url, personFirstName, personLastName, personSector } = row;
 
         let errorMsgs: string[] = [];
-        if (!url || !personFirstName || !personLastName || !personSector) {
+        if (!url || !personFirstName || !personSector) {
           if (!url) errorMsgs.push(`URL para o download ausente`);
           if (!personFirstName) errorMsgs.push(`Primeiro nome ausente`);
-          if (!personLastName) errorMsgs.push(`Sobrenome ausente`);
           if (!personSector) errorMsgs.push(`Setor ausente`);
 
           response.results.push({
@@ -69,7 +68,7 @@ export class DownloadAndRenameUseCase {
           continue;
         }
 
-        const fileName: string = `${personFirstName} ${personLastName} - ${personSector}`.toUpperCase();
+        const fileName: string = `${personFirstName}${personLastName ? ` ${personLastName}` : ''} - ${personSector}`.toUpperCase();
 
         if (this.processedVideoNames.has(fileName)) {
           response.results.push({
@@ -121,20 +120,19 @@ export class DownloadAndRenameUseCase {
         const row = jsonData[rowIndex];
         const url = row[urlColumnIndex];
         const personFirstName = row[firstNameColumnIndex];
-        const personLastName = row[lastNameColumnIndex];
+        const personLastName = lastNameColumnIndex ? row[lastNameColumnIndex] : undefined;
         const personSector = row[sectorColumnIndex];
 
-        if (!url && !personFirstName && !personLastName && !personSector) {
+        if (!url && !personFirstName && !personSector) {
           if (rowIndex + 1 < jsonData.length) {
             const nextRow = jsonData[rowIndex + 1];
             const nextRowUrl = nextRow[urlColumnIndex];
             const nextRowPersonFirstName = nextRow[firstNameColumnIndex];
-            const nextRowPersonLastName = nextRow[lastNameColumnIndex];
             const nextRowPersonSector = nextRow[sectorColumnIndex];
 
             if (
               !nextRowUrl && !nextRowPersonFirstName
-              && !nextRowPersonLastName && !nextRowPersonSector
+              && !nextRowPersonSector
             ) break;
           }
         }

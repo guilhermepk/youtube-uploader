@@ -13,7 +13,7 @@ export default function DownloadStep(): React.JSX.Element {
   async function downloadVideos(): Promise<void> {
     const { downloadFolderPath, sheetPath, firstNameColumn, lastNameColumn, sectorColumn, urlColumn } = flowData;
 
-    if (!downloadFolderPath || !sheetPath || !firstNameColumn || !lastNameColumn || !sectorColumn || !urlColumn) {
+    if (!downloadFolderPath || !sheetPath || !firstNameColumn || !sectorColumn || !urlColumn) {
       window.alert('Campos faltando');
       return;
     }
@@ -23,7 +23,7 @@ export default function DownloadStep(): React.JSX.Element {
       sheet: {
         sheetPath,
         firstNameColumnIndex: firstNameColumn.index,
-        lastNameColumnIndex: lastNameColumn.index,
+        lastNameColumnIndex: lastNameColumn ? lastNameColumn.index : undefined,
         sectorColumnIndex: sectorColumn.index,
         urlColumnIndex: urlColumn.index
       }

@@ -58,17 +58,16 @@ export class UpdateVideosUseCase {
       for (let rowIndex = 1; rowIndex < jsonData.length; rowIndex++) {
         const row = jsonData[rowIndex];
         const personFirstName = row[firstNameColumnIndex];
-        const personLastName = row[lastNameColumnIndex];
+        const personLastName = lastNameColumnIndex ? row[lastNameColumnIndex] : undefined;
         const personSector = row[sectorColumnIndex];
         const descriptionValues = descriptionColumnIndexes.map(descIndex => ({ header: jsonData[0][descIndex], value: row[descIndex] }));
 
-        if (!personFirstName || !personSector || !personLastName) {
-          if (!personFirstName && !personLastName && !personSector) {
+        if (!personFirstName || !personSector) {
+          if (!personFirstName && !personSector) {
             const nextRow = jsonData[rowIndex + 1];
             const nextRowPersonFirstName = nextRow[firstNameColumnIndex];
-            const nextRowPersonLastName = nextRow[lastNameColumnIndex];
             const nextRowPersonSector = nextRow[sectorColumnIndex];
-            if (!nextRowPersonFirstName && !nextRowPersonLastName && !nextRowPersonSector) break;
+            if (!nextRowPersonFirstName && !nextRowPersonSector) break;
           }
 
           response.results.push({
@@ -86,19 +85,19 @@ export class UpdateVideosUseCase {
         };
 
         const safeFirstName = escapeRegExp(personFirstName);
-        const safeLastName = escapeRegExp(personLastName);
+        const safeLastName = personLastName ? escapeRegExp(personLastName) : undefined;
         const safeSector = escapeRegExp(personSector);
 
         // Monta o Regex: Começa com o nome (^), seguido por 1 ou mais espaços (\s+), 
         // e termina com o setor ($). A flag 'i' ignora o case.
-        const regex = new RegExp(`^${safeFirstName} ${safeLastName}(?:\\s*-\\s*|\\s+)${safeSector}$`, 'i');
+        const regex = new RegExp(`^${safeFirstName}${safeLastName ? ` ${safeLastName}` : ''}(?:\\s*-\\s*|\\s+)${safeSector}$`, 'i');
 
         const playlistItem: youtube_v3.Schema$PlaylistItem | undefined = playlistItems.find(
           item => regex.test(item.snippet?.title ?? '')
         );
         const videoId: string | undefined | null = playlistItem?.snippet?.resourceId?.videoId;
 
-        const title = `${personFirstName} ${personLastName} - ${personSector}`;
+        const title = `${personFirstName}${personLastName ? ` ${personLastName}` : ''} - ${personSector}`;
         const upperCaseTitle = title.toUpperCase();
 
         if (!playlistItem || !videoId) {
