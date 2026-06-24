@@ -74,13 +74,25 @@ export class DownloadAndRenameUseCase {
           response.results.push({
             rowIndex,
             success: false,
-            error: 'Vídeo duplicado',
+            error: 'Título duplicado',
             fileName
           });
           continue;
         }
 
         const filePath: string = this.handleFilePath(url, fileName, destinationFolderPath);
+
+        const alreadyDownloaded: boolean = this.alreadyDownloaded(filePath);
+
+        if (alreadyDownloaded) {
+          response.results.push({
+            rowIndex,
+            success: false,
+            error: `O arquivo já existe`
+          });
+
+          continue;
+        }
 
         const downloadResult = await this.downloadVideo(url, filePath, rowIndex);
 
@@ -151,6 +163,10 @@ export class DownloadAndRenameUseCase {
     const finalFileName = `${fileName}${extension}`;
     const finalDestination = path.join(destinationFolderPath, finalFileName);
     return finalDestination;
+  }
+
+  private alreadyDownloaded(filePath: string): boolean {
+    return fs.existsSync(filePath);
   }
 
   private async downloadVideo(
