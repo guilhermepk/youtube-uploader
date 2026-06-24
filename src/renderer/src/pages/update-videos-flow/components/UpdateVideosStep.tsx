@@ -88,7 +88,7 @@ export default function UpdateVideosStep(): React.JSX.Element {
       )}
 
       {flowStatus === 'ended' && (
-        <div className="flex flex-col items-center justify-center gap-4 select-text">
+        <div className="h-full flex flex-col items-center justify-center gap-4 select-text">
           <p className="text-white">O fluxo terminou.</p>
 
           <Table
