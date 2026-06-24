@@ -4,6 +4,7 @@ import { LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { routes } from '@renderer/common/routes';
 import packageJson from '../../../../package.json';
+import toast from 'react-hot-toast';
 
 export default function Navbar(): React.JSX.Element {
   const navigate = useNavigate();
@@ -13,11 +14,11 @@ export default function Navbar(): React.JSX.Element {
     const response = await window.api.google.logout();
 
     if (response.success) {
-      window.alert('Sessão do Google encerrada com sucesso');
+      toast('Sessão do Google encerrada com sucesso');
       navigate(routes.loginPage.path);
     } else {
       const { code, message, details } = response.error;
-      window.alert(`Erro: ${code} | ${message} | ${details}`);
+      toast(`Erro: ${code} | ${message} | ${details}`);
     }
   }
 

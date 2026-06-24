@@ -3,6 +3,7 @@ import UpdateVideoFlowStepTemplate from "./UpdateVideoFlowStepTemplate";
 import { youtube_v3 } from "googleapis";
 import Select from "@renderer/components/Select";
 import { useUpdateVideosFlow } from "@renderer/contexts/UpdateVideosFlowContext";
+import toast from 'react-hot-toast';
 
 export default function SelectPlaylistStep(): React.JSX.Element {
   const { flowData, updateFlowData } = useUpdateVideosFlow();
@@ -16,7 +17,7 @@ export default function SelectPlaylistStep(): React.JSX.Element {
       setPlaylists(playlists);
     } else {
       const { code, message, details } = response.error;
-      window.alert(`Erro: ${code} | ${message} | ${details}`);
+      toast(`Erro: ${code} | ${message} | ${details}`);
     }
   }
 

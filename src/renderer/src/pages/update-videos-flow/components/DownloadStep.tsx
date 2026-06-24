@@ -5,6 +5,7 @@ import { useUpdateVideosFlow } from "@renderer/contexts/UpdateVideosFlowContext"
 import { useState } from "react";
 import { DownloadAndRenameDto } from "@shared/models/dtos/upload-flow-manager/download-and-rename.dto";
 import Table from "@renderer/components/Table";
+import toast from 'react-hot-toast';
 
 export default function DownloadStep(): React.JSX.Element {
   const { flowData, updateFlowData, rows, setRows } = useUpdateVideosFlow();
@@ -14,7 +15,7 @@ export default function DownloadStep(): React.JSX.Element {
     const { downloadFolderPath, sheetPath, firstNameColumn, lastNameColumn, sectorColumn, urlColumn } = flowData;
 
     if (!downloadFolderPath || !sheetPath || !firstNameColumn || !sectorColumn || !urlColumn) {
-      window.alert('Campos faltando');
+      toast('Campos faltando');
       return;
     }
 
@@ -40,7 +41,7 @@ export default function DownloadStep(): React.JSX.Element {
       updateFlowData({ downloadsCompleted: true });
     } else {
       const { code, message, details } = response.error;
-      window.alert(`Erro: ${code} | ${message} | ${details}`);
+      toast(`Erro: ${code} | ${message} | ${details}`);
     }
   }
 

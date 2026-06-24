@@ -3,6 +3,7 @@ import { IpcResponse } from "@shared/models/interfaces/ipc-response.interface";
 import { GetGoogleUserDataResponse } from "@shared/models/responses/google/get-google-user-data.response";
 import { createContext, JSX, useContext, useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import toast from 'react-hot-toast';
 
 type AuthContextType = {
   email: string | null;
@@ -36,7 +37,7 @@ export function AuthProvider(): JSX.Element {
       else if (data.email && pathname == loginPage.path) navigate(homePage.path);
     } else {
       const { code, message, details } = response.error;
-      window.alert(`deu errado: ${code} | ${message} | ${details?.join('; ')}`)
+      toast(`deu errado: ${code} | ${message} | ${details?.join('; ')}`)
     }
   }
 

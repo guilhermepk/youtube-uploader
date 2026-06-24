@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 
 interface FolderSelectProps {
   folderPath: string | null;
@@ -23,7 +24,7 @@ export function FolderSelect({
       }
     } else {
       const { code, message, details } = response.error;
-      window.alert(`Erro: ${code} || ${message} || ${details}`);
+      toast(`Erro: ${code} || ${message} || ${details}`);
     }
   }
 

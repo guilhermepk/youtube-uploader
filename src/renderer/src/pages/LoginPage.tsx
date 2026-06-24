@@ -5,6 +5,7 @@ import { useAuth } from '@renderer/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { routes } from '@renderer/common/routes';
 import packageJson from '../../../../package.json';
+import toast from 'react-hot-toast';
 
 export default function LoginPage(): React.JSX.Element {
   const { refreshAuthData } = useAuth();
@@ -20,7 +21,7 @@ export default function LoginPage(): React.JSX.Element {
       })
     } else {
       const { code, message, details } = response.error;
-      window.alert(`deu errado: ${code} | ${message} | ${details?.join('; ')}`)
+      toast(`deu errado: ${code} | ${message} | ${details?.join('; ')}`)
     }
   }
 

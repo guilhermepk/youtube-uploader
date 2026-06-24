@@ -4,6 +4,7 @@ import { useUpdateVideosFlow } from "@renderer/contexts/UpdateVideosFlowContext"
 import { useEffect, useState } from "react";
 import Table from "@renderer/components/Table";
 import { ResultInUpdateVideosResponse } from "@shared/models/responses/upload-flows-manager/update-videos.response";
+import toast from 'react-hot-toast';
 
 export default function UpdateVideosStep(): React.JSX.Element {
   const { flowData } = useUpdateVideosFlow();
@@ -23,24 +24,24 @@ export default function UpdateVideosStep(): React.JSX.Element {
     } = flowData;
 
     if (!playlist || !firstNameColumn || !lastNameColumn || !sectorColumn || !sheetPath) {
-      window.alert('Campos ausentes');
+      toast('Campos ausentes');
       return;
     }
 
     if (!playlist.id) {
-      window.alert('ID da playlist ausente');
+      toast('ID da playlist ausente');
       return;
     }
 
     const { itemCount: playlistItemCount } = playlist.contentDetails ?? {};
     if (playlistItemCount === undefined || playlistItemCount === null) {
-      window.alert('"itemCount" ausente na playlist');
+      toast('"itemCount" ausente na playlist');
       return;
     }
 
     const { title: playlistTitle } = playlist.snippet ?? {};
     if (!playlistTitle) {
-      window.alert('Nome da playlist ausente');
+      toast('Nome da playlist ausente');
       return;
     }
 
@@ -64,12 +65,12 @@ export default function UpdateVideosStep(): React.JSX.Element {
     if (response.success) {
       const { results } = response.data;
       // const stringResults = results.map(item => `${item.rowIndex} - ${item.success ? 'sucesso' : 'falha'} - ${item.error}`);
-      // window.alert(`Resultado:\n\n${stringResults.join(';\n')}`);
+      // toast(`Resultado:\n\n${stringResults.join(';\n')}`);
       setRows(results);
       setFlowStatus('ended');
     } else {
       const { code, message, details } = response.error;
-      window.alert(`Erro: ${code} | ${message} | ${details}`);
+      toast(`Erro: ${code} | ${message} | ${details}`);
     }
   }
 

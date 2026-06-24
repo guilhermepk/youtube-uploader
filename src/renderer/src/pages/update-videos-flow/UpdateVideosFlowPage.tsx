@@ -11,6 +11,7 @@ import SelectPlaylistStep from "./components/SelectPlaylistStep";
 import UpdateVideosStep from "./components/UpdateVideosStep";
 import { useNavigate } from "react-router-dom";
 import { routes } from "@renderer/common/routes";
+import toast from 'react-hot-toast';
 
 
 export default function UpdateVideosFlowPage(): React.JSX.Element {
@@ -35,12 +36,12 @@ export default function UpdateVideosFlowPage(): React.JSX.Element {
     const { sheet, sheetPath } = flowData;
 
     if (!sheet) {
-      window.alert('Envie um arquivo antes de prosseguir');
+      toast('Envie um arquivo antes de prosseguir');
       return false;
     }
 
     if (!sheetPath) {
-      window.alert('O caminho para o arquivo enviado não foi definido');
+      toast('O caminho para o arquivo enviado não foi definido');
       return false;
     }
 
@@ -59,7 +60,7 @@ export default function UpdateVideosFlowPage(): React.JSX.Element {
       ];
       const missing = fields.filter(item => !item.value);
 
-      window.alert(`Mapeie todas as colunas antes de prosseguir. Campos faltando:\n\n${missing.map((item, index) => `${index + 1} - "${item.name}"`).join(';\n')}`);
+      toast(`Mapeie todas as colunas antes de prosseguir. Campos faltando:\n\n${missing.map((item, index) => `${index + 1} - "${item.name}"`).join(';\n')}`);
       return false;
     }
     return true;
@@ -68,12 +69,12 @@ export default function UpdateVideosFlowPage(): React.JSX.Element {
   function isDownloadCompleted(): boolean {
     const { downloadFolderPath, downloadsCompleted } = flowData;
     if (!downloadFolderPath) {
-      window.alert('Selecione a pasta de destino de download dos vídeos');
+      toast('Selecione a pasta de destino de download dos vídeos');
       return false;
     }
 
     if (!downloadsCompleted) {
-      window.alert('O download ainda não terminou');
+      toast('O download ainda não terminou');
       return false;
     }
 
@@ -83,7 +84,7 @@ export default function UpdateVideosFlowPage(): React.JSX.Element {
   function isPlaylistSelected(): boolean {
     const { playlist } = flowData;
     if (!playlist) {
-      window.alert('Selecione a playlist em que os vídeos foram manualmente cadastrados');
+      toast('Selecione a playlist em que os vídeos foram manualmente cadastrados');
       return false;
     } else return true;
   }
