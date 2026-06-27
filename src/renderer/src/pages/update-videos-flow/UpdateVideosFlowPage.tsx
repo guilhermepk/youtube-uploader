@@ -12,6 +12,7 @@ import UpdateVideosStep from "./components/UpdateVideosStep";
 import { useNavigate } from "react-router-dom";
 import { routes } from "@renderer/common/routes";
 import toast from 'react-hot-toast';
+import { showConfirmModal } from "@renderer/components/ConfirmModal";
 
 
 export default function UpdateVideosFlowPage(): React.JSX.Element {
@@ -81,7 +82,7 @@ export default function UpdateVideosFlowPage(): React.JSX.Element {
     return true;
   }
 
-  function isPlaylistSelected(): boolean {
+  function verifyIsPlaylistIsSelected(): boolean {
     const { playlist } = flowData;
     if (!playlist) {
       toast('Selecione a playlist em que os vídeos foram manualmente cadastrados');
@@ -89,7 +90,32 @@ export default function UpdateVideosFlowPage(): React.JSX.Element {
     } else return true;
   }
 
-  const steps: Array<StepItem & { canMoveToNextStep?: () => boolean }> = [
+  async function confirmPlaylistSelection(): Promise<boolean> {
+    return await new Promise((resolve, _reject) => {
+      showConfirmModal({
+        title: 'Já publicou os vídeos?',
+        message: 'Antes de selecionar a playlist, você precisa ter publicado os vídeos no youtube manualmente e colocado eles na playlist.',
+        onConfirm: () => {
+          resolve(true);
+        },
+        onCancel: () => {
+          toast('Seleção cancelada', { duration: 2 });
+          resolve(false);
+        },
+      });
+    })
+  }
+
+  async function validatePlaylist(): Promise<boolean> {
+    const isPlaylistSelected: boolean = verifyIsPlaylistIsSelected();
+
+    if (isPlaylistSelected) {
+      const playlistSelectionConfirmed: boolean = await confirmPlaylistSelection();
+      return isPlaylistSelected && playlistSelectionConfirmed;
+    } else return false;
+  }
+
+  const steps: Array<StepItem & { canMoveToNextStep?: (() => boolean) | (() => Promise<boolean>) }> = [
     {
       title: "Upload da planilha",
       content: <SheetUploadStep />,
@@ -108,7 +134,7 @@ export default function UpdateVideosFlowPage(): React.JSX.Element {
     {
       title: "Selecionar playlist",
       content: <SelectPlaylistStep />,
-      canMoveToNextStep: isPlaylistSelected
+      canMoveToNextStep: validatePlaylist
     },
     {
       title: "Atualização automática",
@@ -116,9 +142,9 @@ export default function UpdateVideosFlowPage(): React.JSX.Element {
     },
   ];
 
-  const nextStep = () => {
+  async function nextStep(): Promise<void> {
     const currentStep = steps[currentStepIndex];
-    const currentStepAllows: boolean = currentStep.canMoveToNextStep ? currentStep.canMoveToNextStep() : true;
+    const currentStepAllows: boolean = currentStep.canMoveToNextStep ? await currentStep.canMoveToNextStep() : true;
 
     if (currentStepIndex < (steps.length - 1) && currentStepAllows) setCurrentStepIndex((prev) => prev + 1);
   };

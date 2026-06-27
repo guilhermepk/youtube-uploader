@@ -12,7 +12,7 @@ interface StepperProps {
   steps: StepItem[];
   currentStepIndex: number;
   onPrevStep: (currentStepIndex: number) => void;
-  onNextStep: (currentStepIndex: number) => void;
+  onNextStep: ((currentStepIndex: number) => void) | ((currentStepIndex: number) => Promise<void>);
   onFinish: () => void;
 }
 
@@ -44,7 +44,7 @@ export function Stepper({ steps, currentStepIndex, onNextStep, onPrevStep, onFin
           onClick={
             currentStepIndex === steps.length - 1
               ? onFinish
-              : () => onNextStep(currentStepIndex)
+              : async () => await onNextStep(currentStepIndex)
           }
         >
           {currentStepIndex === steps.length - 1 ? "Finalizar" : "Próximo"}
