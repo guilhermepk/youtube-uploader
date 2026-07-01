@@ -4,6 +4,7 @@ import { Auth } from "googleapis";
 
 export async function googleAuthFactory(readGoogleTokenUseCase: ReadGoogleTokenUseCase) {
   const logger = new Logger(googleAuthFactory.name);
+
   const client = new Auth.OAuth2Client(
     process.env.GOOGLE_CLIENT_ID,
     process.env.GOOGLE_CLIENT_SECRET,
